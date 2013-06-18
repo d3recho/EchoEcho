@@ -1,0 +1,6 @@
+.ui-slider-input {
+    display : none !important;
+}
+.ui-slider-track {
+	margin: 0 15px 0 15px;
+}
