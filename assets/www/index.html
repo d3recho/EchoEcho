@@ -20,7 +20,7 @@
 			</div>
 
 			<div id="main_top" data-role="content" class="ui-content">
-				<select name="select_file" id="select_file" data-corners="false" data-native-menu="false" data-placeholder="false">
+				<select name="select_file" id="select_file" data-corners="false" data-native-menu="false" data-placeholder="false" data-icon="bars">
 					<option value="">Select file</option>
 					<option value="">Some file first</option>
 					<option value="">Another something or whqatev</option>
@@ -30,7 +30,7 @@
 					<option value="">Add file ...</option>
 				</select>
 				<input type="range" name="slider_pos" value="50" min="0" max="100" data-highlight="true" />
-				<select name="delay" id="delay" data-corners="false" data-native-menu="false" data-inline="true" />
+				<select name="delay" id="delay" data-corners="false" data-native-menu="false" data-inline="true"/>
 					<option value="">Play delay</option>
 					<option value="">3 sec</option>
 					<option value="">5 sec</option>
@@ -40,17 +40,51 @@
 			</div>
 
 			<div id="main_middle" data-role="content" class="ui-content">
-				<ul data-role="listview" data-inset="true" data-split-theme="c">
-					<li><a href=""><span class="ui-li-count">0:00</span>From the start</a><a href="#conf-pos" data-rel="dialog" data-transition="flip">Configure</a></li>
-					<li><a href=""><span class="ui-li-count">0:44</span>First airtime</a><a href="#conf-pos" data-rel="dialog">Configure</a></li>
-					<li><a href=""><span class="ui-li-count">1:21</span>Down down</a><a href="#conf-pos" data-rel="dialog">Configure</a></li>
-					<li><a href=""><span class="ui-li-count">2:33</span>Make it happen</a><a href="#conf-pos" data-rel="dialog">Configure</a></li>
-					<li><a href=""><span class="ui-li-count">5:03</span>Bring it</a><a href="#conf-pos" data-rel="dialog">Configure</a></li>
-					<li data-icon="plus"><a href="" style="text-align: center">Add new ...</a></li>
+				<ul data-role="listview" data-inset="true" data-split-theme="c" data-split-icon="grid">
+					<li><a href=""><span class="ui-li-count">0:00</span>From the start</a>	<a href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window">Configure</a></li>
+					<li><a href=""><span class="ui-li-count">0:44</span>First airtime</a>	<a href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window">Configure</a></li>
+					<li><a href=""><span class="ui-li-count">1:21</span>Down down</a>		<a href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window">Configure</a></li>
+					<li><a href=""><span class="ui-li-count">2:33</span>Make it happen</a>	<a href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window">Configure</a></li>
+					<li><a href=""><span class="ui-li-count">5:03</span>Bring it</a>		<a href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window">Configure</a></li>
+					<li data-icon="plus"><a href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window" style="text-align: center">Add new ...	</a></li>
 				</ul>
 			</div>
+			
+			<div data-role="popup" id="popup-pos" data-corners="false" data-overlay-theme="a" data-dismissible="true">
+				<div data-role="header"><h4>Play from</h4></div>
+				<div class="ui-content">					
+					<input type="text" name="pos-name" id="pos-name" value="" placeholder="Enter short description" />
+					<div style="width: 100%;">
+					<div style="width: 45%; display: inline-block;">
+						<label for="">Minutes</label>
+						<input id="pos-minute" class="ui-input-text" type="number" value="0" min="0" max="59"></input>					
+					</div>
+					<div style="width: 45%; display: inline-block; float: right;">
+						<label for="">Seconds</label>
+						<input id="pos-second" class="ui-input-text" type="number" value="0" min="0" max="59"></input>
+					</div>					
+					</div>					
+					<a href="" data-role="button" data-icon="forward">Get current position</a>
+					<div data-role="controlgroup" data-type="horizontal">
+						<a href="#" data-rel="back" data-role="button" data-icon="check">Save</a>
+						<a href="#" data-rel="back" data-role="button" >Cancel</a>
+						<a href="#confirm-delete" data-rel="popup" data-corners="false" data-role="button" data-icon="delete" data-transition="pop" data-position-to="window" data-iconpos="notext">Delete</a>
+					</div>					
+				</div>
+				<div data-role="popup" id="confirm-delete" data-overlay-theme="a">
+					<div data-role="header"><h4>Confirm deletion</h4></div>
+					<div class="ui-content">					
+						<span>Are you sure you wish to delete this entry?</span>
+						<div data-role="controlgroup" data-type="horizontal">
+							<a href="#" data-rel="back" data-role="button" data-icon="delete">Delete</a>
+							<a href="#" data-rel="back" data-role="button" >Cancel</a>
+						</div>
+					</div>
+				</div>
+			</div>			
 
 		</div>
+		
 		<div data-role="page" id="config">
 			<div data-role="header">
 				<h2>Configure</h2>
@@ -59,6 +93,7 @@
 				<p>Configuration here here here</p>
 				<a href="" data-role="button" data-rel="back">Close</a>
 			</div>
-		</div>		
+		</div>
+		
     </body>
 </html>
