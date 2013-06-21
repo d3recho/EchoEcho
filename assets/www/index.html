@@ -22,24 +22,19 @@
 			<div id="main_content" data-role="content" class="ui-content">
 			
 				<select name="select_file" id="select_file" data-corners="false" data-native-menu="false" data-placeholder="false" data-icon="bars">
-					<option value="-1">Select file</option>
+					<option value="">Select file</option>
 				</select>
 				
-				<input type="range" name="slider_pos" value="50" min="0" max="100" data-highlight="true" />
+				<input id="pos-slider" type="range" name="pos-slider" value="0" min="0" max="0" data-highlight="true" />
 				
-				<select name="select_delay" id="select_delay" data-corners="false" data-native-menu="false" data-inline="true"/>
-					<option value="-1">Set delay</option>
-				</select>
-				
-				<ul id="list_pos" data-role="listview" data-inset="true" data-split-theme="c" data-split-icon="grid">
-					<li><a href=""><span class="ui-li-count">0:00</span>From the start</a>	<a href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window">Configure</a></li>
-					<li><a href=""><span class="ui-li-count">0:44</span>First airtime</a>	<a href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window">Configure</a></li>
-					<li><a href=""><span class="ui-li-count">1:21</span>Down down</a>		<a href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window">Configure</a></li>
-					<li><a href=""><span class="ui-li-count">2:33</span>Make it happen</a>	<a href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window">Configure</a></li>
-					<li><a href=""><span class="ui-li-count">5:03</span>Bring it</a>		<a href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window">Configure</a></li>
-					<li data-icon="plus"><a href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window" style="text-align: center">Add new ...	</a></li>
-				</ul>
-				
+				<div id="song_details" style="display:none">
+					<select name="select_delay" id="select_delay" data-corners="false" data-native-menu="false" data-inline="true"/>
+						<option value="">Set delay</option>
+					</select>
+					
+					<ul id="list_pos" data-role="listview" data-inset="true" data-split-theme="c" data-split-icon="grid">
+					</ul>
+				</div>
 			</div>
 			
 			<div data-role="popup" id="popup-pos" data-corners="false" data-overlay-theme="a" data-dismissible="true">
@@ -56,9 +51,9 @@
 						<input id="pos-second" class="ui-input-text" type="number" value="0" min="0" max="59"></input>
 					</div>					
 					</div>					
-					<a href="" data-role="button" data-icon="forward">Get current position</a>
+					<a id="pos-getcurrent" href="" data-role="button" data-icon="forward">Get current duration</a>
 					<div data-role="controlgroup" data-type="horizontal">
-						<a href="#" data-rel="back" data-role="button" data-icon="check">Save</a>
+						<a id="pos-save" href="#" data-rel="back" data-role="button" data-icon="check">Save</a>
 						<a href="#" data-rel="back" data-role="button" >Cancel</a>
 						<a href="#confirm-delete" data-rel="popup" data-corners="false" data-role="button" data-icon="delete" data-transition="pop" data-position-to="window" data-iconpos="notext">Delete</a>
 					</div>					
