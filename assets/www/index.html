@@ -19,28 +19,19 @@
 					<a href="#config" class="ui-btn-right" data-role="button" data-inline="true" data-icon="gear" data-rel="dialog" data-transition="flip">Config</a>
 			</div>
 
-			<div id="main_top" data-role="content" class="ui-content">
+			<div id="main_content" data-role="content" class="ui-content">
+			
 				<select name="select_file" id="select_file" data-corners="false" data-native-menu="false" data-placeholder="false" data-icon="bars">
-					<option value="">Select file</option>
-					<option value="">Some file first</option>
-					<option value="">Another something or whqatev</option>
-					<option value="">Who knows what</option>
-					<option value="">Some file first</option>
-					<option value="">Another something</option>
-					<option value="">Add file ...</option>
+					<option value="-1">Select file</option>
 				</select>
+				
 				<input type="range" name="slider_pos" value="50" min="0" max="100" data-highlight="true" />
-				<select name="delay" id="delay" data-corners="false" data-native-menu="false" data-inline="true"/>
-					<option value="">Play delay</option>
-					<option value="">3 sec</option>
-					<option value="">5 sec</option>
-					<option value="">10 sec</option>
-					<option value="">20 sec</option>
+				
+				<select name="select_delay" id="select_delay" data-corners="false" data-native-menu="false" data-inline="true"/>
+					<option value="-1">Set delay</option>
 				</select>
-			</div>
-
-			<div id="main_middle" data-role="content" class="ui-content">
-				<ul data-role="listview" data-inset="true" data-split-theme="c" data-split-icon="grid">
+				
+				<ul id="list_pos" data-role="listview" data-inset="true" data-split-theme="c" data-split-icon="grid">
 					<li><a href=""><span class="ui-li-count">0:00</span>From the start</a>	<a href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window">Configure</a></li>
 					<li><a href=""><span class="ui-li-count">0:44</span>First airtime</a>	<a href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window">Configure</a></li>
 					<li><a href=""><span class="ui-li-count">1:21</span>Down down</a>		<a href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window">Configure</a></li>
@@ -48,6 +39,7 @@
 					<li><a href=""><span class="ui-li-count">5:03</span>Bring it</a>		<a href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window">Configure</a></li>
 					<li data-icon="plus"><a href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window" style="text-align: center">Add new ...	</a></li>
 				</ul>
+				
 			</div>
 			
 			<div data-role="popup" id="popup-pos" data-corners="false" data-overlay-theme="a" data-dismissible="true">

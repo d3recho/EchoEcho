@@ -1,42 +1,109 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
+
+
+							
+							$(document).ready(function() { 
+								/* Generate file dropdown content */
+								$.each(mediaObj, function(i, e) {
+									var $optSelected = (i === currentObj) ? " SELECTED" : "";
+									$('#select_file').append('<option value="' + e.id + '"' + $optSelected + '>' + e.title + '</option>');
+								});
+								
+								/* Generate delay dropdown content */
+								$.each(delayObj, function(i, e) {
+									var $optSelected = (i === mediaObj[currentObj].delay) ? " SELECTED" : "";
+									$('#select_delay').append('<option value="' + e + '"' + $optSelected + '>' + e + ' seconds</option>')
+								});
+								
+								/* Generate positions list for selected file */								
+								$.each(mediaObj[currentObj].positions, function(i, e) {
+									//$('#list_pos li').first().clone().appendTo('#list_pos');
+								});
+								
+								/* refresh menus*/
+								$('#select_file').selectmenu('refresh');
+								$('#select_delay').selectmenu('refresh');
+								
+							});
+
+
+
+
+
+
 var app = {
-    // Application Constructor
     initialize: function() {
         this.bindEvents();
     },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
     },
-    // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() {
+		
         app.receivedEvent('deviceready');
     },
-    // Update DOM on a Received Event
     receivedEvent: function(id) {
         console.log('Received Event: ' + id);
     }
 };
+
+var delayObj = [0, 3, 5, 10, 20];
+var currentObj = 1;
+var mediaObj = [{
+	title: "Song one",
+	path: "/sdcard/music/a.mp3",
+	delay: 1,
+	duration: 320,
+	positions: [{
+		position: 5,
+		name: "position one"
+	},
+	{
+		position: 220,
+		name: "second position"
+	}]
+},
+{
+	title: "Song two",
+	path: "/sdcard/music/a.mp3",
+	delay: 2,
+	duration: 400,
+	positions: [{
+		position: 20,
+		name: "whatever here"
+	},
+	{
+		position: 40,
+		name: "let it spin"
+	}]
+},
+{
+	title: "Song three",
+	path: "/sdcard/music/a.mp3",
+	delay: 4,
+	duration: 160,
+	positions: [{
+		position: 10,
+		name: "around around"
+	},
+	{
+		position: 70,
+		name: "make some more"
+	},
+	{
+		position: 130,
+		name: "hit my jelly"
+	}]
+},
+{
+	title: "Add file ...",
+	path: "",
+	delay: 0,
+	duration: 0,
+	positions: []
+}];
+
+
+
+
+
