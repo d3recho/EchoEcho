@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8" />
@@ -9,6 +10,8 @@
 		<script src="js/jquery.mobile-1.3.1.js"></script>		
         <script type="text/javascript" src="js/cordova-2.7.0.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
+		<script type="text/javascript" src="js/uiEventFunctions.js"></script>
+		<script type="text/javascript" src="js/utilityFunctions.js"></script>
         <title>Hello World</title>
     </head>
     <body onload="app.initialize()">
@@ -21,22 +24,43 @@
 
 			<div id="main_content" data-role="content" class="ui-content">
 			
+				<!-- Dropdown main file -->
 				<select name="select_file" id="select_file" data-corners="false" data-native-menu="false" data-placeholder="false" data-icon="bars">
 					<option value="">Select file</option>
 				</select>
 				
+				<!-- Song details -->
+				<div id="details">
+					<div style="display:inline-block">
+						<h1 id="song-position">0:40</h1>
+					</div>
+					<div style="display:inline-block; float:right">
+						<select name="select_delay" id="select_delay" data-corners="false" data-native-menu="false" data-inline="true"/>
+							<option value="">Delay before playback</option>
+						</select>
+					</div>					
+				</div>
+				
+				<!-- Slider song position -->
 				<input id="pos-slider" type="range" name="pos-slider" value="0" min="0" max="0" data-highlight="true" />
 				
-				<div id="song_details" style="display:none">
-					<select name="select_delay" id="select_delay" data-corners="false" data-native-menu="false" data-inline="true"/>
-						<option value="">Set delay</option>
-					</select>
-					
+				<!-- Media controls and delay dropdown -->
+				<div id="div_mediacontrol" style="display:none;">
+					<div data-role="controlgroup" data-type="horizontal" style="display:inline-block; white-space: nowrap">
+						<a href="#" id="play" data-role="button" data-icon="play">Play</a>
+						<a href="#" id="pause" data-role="button" data-icon="pause">Pause</a>
+						<a href="#" id="stop" data-role="button" data-icon="stop">Stop</a>
+					</div>
+				</div>
+				<!-- List of positions -->
+				<div id="div_list" style="display:none">
 					<ul id="list_pos" data-role="listview" data-inset="true" data-split-theme="c" data-split-icon="grid">
 					</ul>
 				</div>
 			</div>
 			
+			
+			<!-- Popup configure positions -->
 			<div data-role="popup" id="popup-pos" data-corners="false" data-overlay-theme="a" data-dismissible="true">
 				<div data-role="header"><h4>Play from</h4></div>
 				<div class="ui-content">					
@@ -44,7 +68,7 @@
 					<div style="width: 100%;">
 					<div style="width: 45%; display: inline-block;">
 						<label for="">Minutes</label>
-						<input id="pos-minute" class="ui-input-text" type="number" value="0" min="0" max="59"></input>					
+						<input id="pos-minute" class="ui-input-text" type="number" value="0" min="0" max="999"></input>
 					</div>
 					<div style="width: 45%; display: inline-block; float: right;">
 						<label for="">Seconds</label>
@@ -54,8 +78,8 @@
 					<a id="pos-getcurrent" href="" data-role="button" data-icon="forward">Get current duration</a>
 					<div data-role="controlgroup" data-type="horizontal">
 						<a id="pos-save" href="#" data-rel="back" data-role="button" data-icon="check">Save</a>
-						<a href="#" data-rel="back" data-role="button" >Cancel</a>
-						<a href="#confirm-delete" data-rel="popup" data-corners="false" data-role="button" data-icon="delete" data-transition="pop" data-position-to="window" data-iconpos="notext">Delete</a>
+						<a id="pos-delete" href="#confirm-delete" data-rel="popup" data-role="button" data-icon="delete" data-transition="pop" data-position-to="window" data-iconpos="notext">Delete</a>
+						<a href="#" data-rel="back" data-role="button">Cancel</a>
 					</div>					
 				</div>
 				<div data-role="popup" id="confirm-delete" data-overlay-theme="a">
@@ -63,7 +87,7 @@
 					<div class="ui-content">					
 						<span>Are you sure you wish to delete this entry?</span>
 						<div data-role="controlgroup" data-type="horizontal">
-							<a href="#" data-rel="back" data-role="button" data-icon="delete">Delete</a>
+							<a id="pos-delete-confirm" href="#" data-rel="back" data-role="button" data-icon="delete">Delete</a>
 							<a href="#" data-rel="back" data-role="button" >Cancel</a>
 						</div>
 					</div>
@@ -72,6 +96,7 @@
 
 		</div>
 		
+		<!-- Config page -->
 		<div data-role="page" id="config">
 			<div data-role="header">
 				<h2>Configure</h2>

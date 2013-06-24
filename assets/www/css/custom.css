@@ -1,6 +1,32 @@
+#song-position {
+	margin-bottom: 0px;
+	margin-top: 10px;
+}
+
 .ui-slider-input {
     display : none !important;
 }
 .ui-slider-track {
 	margin: 0 15px 0 15px;
 }
+
+div.ui-slider {
+	margin-bottom: 0px;
+}
+
+.ui-icon-play {
+	background-image: url(images/icon-black-circleplay.png);
+	background-color: #FFF;
+	background-size: 18px;
+}
+.ui-icon-pause {
+	background-image: url(images/icon-black-circlepause.png);
+	background-color: #FFF;
+	background-size: 18px;
+}
+.ui-icon-stop {
+	background-image: url(images/icon-black-circlestop.png);
+	background-color: #FFF;
+	background-size: 18px;
+}
+	

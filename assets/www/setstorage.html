@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	<script src="js/jquery.js"></script>
+<script>
+$(document).ready(function() {
+	console.log(tmpdata);
+	$('a').on('click', function() {
+
+		if (tmpdata != "") {
+			localStorage.setItem("mediaObjects", JSON.stringify(tmpdata));
+			alert('Set!');
+		}
+	});
+});
+
+var tmpdata = [{
+	title: "Macarone",
+	path: "/sdcard/music/a.mp3",
+	delay: 10,
+	duration: 320,
+	positions: [{
+		position: 0,
+		name: "Play from beginning"
+	},
+	{
+		position: 5,
+		name: ""
+	},
+	{
+		position: 220,
+		name: "second position"
+	}]
+},
+{
+	title: "Song two",
+	path: "/sdcard/music/a.mp3",
+	delay: 2,
+	duration: 400,
+	positions: [{
+		position: 0,
+		name: "Play from beginning"
+	},
+	{
+		position: 20,
+		name: "whatever here"
+	},
+	{
+		position: 40,
+		name: "let it spin"
+	}]
+},
+{
+	title: "Song three",
+	path: "/sdcard/music/a.mp3",
+	delay: 4,
+	duration: 160,
+	positions: [{
+		position: 0,
+		name: "Play from beginning"
+	},
+	{
+		position: 10,
+		name: "around around"
+	},
+	{
+		position: 70,
+		name: "make some more"
+	},
+	{
+		position: 130,
+		name: "hit my jelly"
+	}]
+}];
+</script>
+    </head>
+	<body>
+	
+	Set data to local storage <b>mediaObjects</b>
+	<a href="#">Set</a>
+	
+	</body>
+</html>
