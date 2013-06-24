@@ -19,6 +19,10 @@ var app = {
 var delayObj = [0, 3, 5, 10, 20];
 var selFileIndex = 0;
 var mediaObj;
+var playbackTimer;
+var sliderPos = 0;
+var isPlayingBack = false;
+var isPaused = false;
 							
 $(document).ready(function() { 
 	/* Prohibit manually entered number */
@@ -39,7 +43,7 @@ $(document).ready(function() {
 
 	/* Position slider change event */
 	$('#pos-slider').on('change', function() {
-		slidePositionSlider();
+		slidePositionChanged();
 	});	
 	
 	/* Position conf Remove click event */
@@ -62,6 +66,21 @@ $(document).ready(function() {
 		setTimeAudioPosEntry();
 	});
 
+	/* Play button click event */
+	$('#play').on('click', function() {
+		playbackControl('play');
+	});
+
+	/* Pause button click event */
+	$('#pause').on('click', function() {
+		playbackControl('pause');
+	});
+
+	/* Stop button click event */
+	$('#stop').on('click', function() {
+		playbackControl('stop');
+	});
+	
 	getObjFromStorage();
 	updateTopUI();
 	updateBodyUI();

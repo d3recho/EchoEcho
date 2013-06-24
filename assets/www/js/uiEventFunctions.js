@@ -32,7 +32,6 @@ function loadPositionObj(that) {
 	var selPositionIndex = that.data('posobj');
 	$('#popup-pos').data('posobj', selPositionIndex);
 	/* Hides or shows delete button */
-	console.log(selPositionIndex);
 	if (selPositionIndex == -1) $('#pos-delete').hide();
 	else {
 		$('#pos-delete').show();
@@ -44,6 +43,38 @@ function loadPositionObj(that) {
 	}
 }
 
-function slidePositionSlider() {
-	$('#song-position').text(timeDispStr($('#pos-slider').val()));
+function slidePositionChanged() {
+	sliderPos = $('#pos-slider').val();
+	$('#song-position').text(timeDispStr(sliderPos));
+}
+
+function playbackControl(action) {
+	clearTimeout(playbackTimer);
+	switch(action) {
+		case 'play': 
+			if (isPlayingBack) {
+				updateSlider(0);
+			}
+			isPaused = false;
+			isPlayingBack = true;
+			playbackTimer = setInterval(function() {
+				updateSlider();
+			}, 1000);
+			break;
+		case 'pause': 
+			if (isPaused) {
+				isPaused = false;
+				playbackControl('play');
+			} 
+			else if (isPlayingBack) {
+				isPaused = true;
+				isPlayingBack = false;
+			}
+			break;
+		case 'stop':
+			isPaused = false;
+			isPlayingBack = false;
+			updateSlider(0);
+			break;
+	}
 }

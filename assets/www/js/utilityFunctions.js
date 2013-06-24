@@ -1,5 +1,5 @@
+/* Get Object from local storage */
 function getObjFromStorage() {
-	/* Get Object from local storage */
 	mediaObj = localStorage.getItem("mediaObjects");
 	mediaObj = JSON.parse(mediaObj);
 	if (mediaObj === null) {
@@ -7,8 +7,8 @@ function getObjFromStorage() {
 	}
 }	
 
+/* Set Object to local storage */
 function setObjToStorage() {
-	/* Set Object to local storage */
 	localStorage.setItem("mediaObjects", JSON.stringify(mediaObj));
 }	
 
@@ -44,3 +44,18 @@ function timeGetSeconds() {
 	return min * 60 + sec;
 }
 
+/* Update position slider position */
+function updateSlider(position) {
+	if (position == undefined) {
+		timeDispStr($('#pos-slider').val(++sliderPos));
+		if (sliderPos >= mediaObj[selFileIndex].duration) {
+			clearTimeout(playbackTimer);
+			playbackControl('stop');
+		}
+	} 
+	else {
+		sliderPos = position;
+		timeDispStr($('#pos-slider').val(position));
+	}
+	$('#pos-slider').slider("refresh");
+}
