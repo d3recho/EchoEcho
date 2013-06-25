@@ -31,34 +31,33 @@
 				
 				<!-- Song details -->
 				<div id="details">
-					<div style="display:inline-block">
-						<h1 id="song-position">0:00</h1>
-					</div>
-					<div style="display:inline-block; float:right">
-						<select name="select_delay" id="select_delay" data-corners="false" data-native-menu="false" data-inline="true"/>
-							<option value="">Delay before playback</option>
-						</select>
-					</div>					
+					<h1 id="song-position" style="text-align:center">0:00</h1>
 				</div>
 				
 				<!-- Slider song position -->
 				<input id="pos-slider" type="range" name="pos-slider" value="0" min="0" max="0" data-highlight="true" />
 				
 				<!-- Media controls and delay dropdown -->
-				<div id="div_mediacontrol" style="display:none;">
-					<div data-role="controlgroup" data-type="horizontal" style="display:inline-block; white-space: nowrap">
+				<div id="div_mediacontrol">
+					<div data-role="controlgroup" data-shadow="true" data-type="horizontal" style="display:inline-block; white-space: nowrap">
 						<a href="#" id="play" data-role="button" data-icon="play">Play</a>
 						<a href="#" id="pause" data-role="button" data-icon="pause">Pause</a>
 						<a href="#" id="stop" data-role="button" data-icon="stop">Stop</a>
 					</div>
 				</div>
+
 				<!-- List of positions -->
 				<div id="div_list" style="display:none">
 					<ul id="list_pos" data-role="listview" data-inset="true" data-split-theme="c" data-split-icon="grid">
 					</ul>
 				</div>
+				<!-- Delay dropdown -->
+				<div data-role="fieldcontain" class="ui-br">
+				<label for="select_delay" style="display:inline-block">Delayed playback</label>
+				<select name="select_delay" id="select_delay" style="display:inline-block" data-corners="false" data-native-menu="false" data-inline="true"/>
+				</select>
+				</div>
 			</div>
-			
 			
 			<!-- Popup configure positions -->
 			<div data-role="popup" id="popup-pos" data-corners="false" data-overlay-theme="a" data-dismissible="true">
@@ -102,8 +101,8 @@
 				<h2>Configure</h2>
 			</div>
 			<div data-role="content">
-				<p>Configuration here here here</p>
-				<a href="" data-role="button" data-rel="back">Close</a>
+				<p>Configuration </p>
+				<a href="" id="load-dev-json-data" data-role="button" data-rel="back">Load development JSON data</a>
 			</div>
 		</div>
 		

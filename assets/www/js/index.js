@@ -16,14 +16,16 @@ var app = {
 };
 
 
-var delayObj = [0, 3, 5, 10, 20];
+var delayObj = [0, 2, 3, 5, 10, 20];
 var selFileIndex = 0;
 var mediaObj;
 var playbackTimer;
+var delayTimer;
 var sliderPos = 0;
 var isPlayingBack = false;
 var isPaused = false;
-							
+var dev_json_data = '[{"title":"Macarone","path":"/sdcard/music/a.mp3","delay":10,"duration":320,"positions":[{"position":0,"name":"Play from beginning"},{"position":5,"name":""},{"position":220,"name":"second position"}]},{"title":"Song two","path":"/sdcard/music/a.mp3","delay":2,"duration":400,"positions":[{"position":0,"name":"Play from beginning"},{"position":20,"name":"whatever here"},{"position":40,"name":"let it spin"}]},{"title":"Song three","path":"/sdcard/music/a.mp3","delay":4,"duration":160,"positions":[{"position":0,"name":"Play from beginning"},{"position":10,"name":"around around"},{"position":70,"name":"make some more"},{"position":130,"name":"hit my jelly"}]}]';							
+
 $(document).ready(function() { 
 	/* Prohibit manually entered number */
 	$('input[type=number]').keypress(function() {
@@ -32,8 +34,7 @@ $(document).ready(function() {
 	
 	/* File change event for select */	
 	$('#select_file').on('change', function() {
-		selFileIndex = $('#select_file option:selected').val();
-		updateBodyUI();
+		mediaFileChanged();
 	});
 	
 	/* Position conf Delay change event for select */
@@ -57,9 +58,13 @@ $(document).ready(function() {
 	});
 	
 	/* Click event to retrieve position data for popup */
-	$('#list_pos').on('click', '.btn-pos-popup', function() {
-		loadPositionObj($(this));
-	});
+	$('#list_pos')
+		.on('click', '.btn-pos-popup', function() {	
+			loadPositionObj($(this));
+		})
+		.on('click', '.btn-play-pos', function() {
+			playFromPosition($(this));
+		});
 
 	/* Click event for get current slider position */
 	$('#pos-getcurrent').on('click', function() {
@@ -81,56 +86,18 @@ $(document).ready(function() {
 		playbackControl('stop');
 	});
 	
+	/* Load development default json data */
+	$('#load-dev-json-data').on('click', function() {
+		localStorage.setItem("mediaObjects", dev_json_data);
+		getObjFromStorage();
+		updateTopUI();
+		updateBodyUI();
+		alert('Set.');
+	});			
+
 	getObjFromStorage();
 	updateTopUI();
 	updateBodyUI();
 	
 });
-
-function updateTopUI() {
-	/* Generate file dropdown content */
-	$.each(mediaObj, function(i, e) {
-		var $optSelected = (i === selFileIndex) ? " SELECTED" : "";
-		$tmpTitle = (e.title.trim() == "") ? "Untitled" : e.title + " (" + timeDispStr(e.duration) + ")";
-		$('#select_file').append('<option class="" value="' + i + '"' + $optSelected + '>' + $tmpTitle + '</option>');
-	});
-	$('#select_file').append('<option class="" value="-1">Add new ...</option>');
-	$('#select_file').selectmenu('refresh');	
-}
-
-
-function updateBodyUI() {
-	/* Clear generated elements */
-	$('.generated').remove();
-	$('#div_mediacontrol').hide();
-	$('#div_list').hide();
-	
-	if (mediaObj.length > 0 && selFileIndex >= 0) {
-		/* Adjust slider max value */
-		$('#pos-slider').val(0);
-		$('#pos-slider').slider("refresh");
-		$('#pos-slider').attr('max', mediaObj[selFileIndex].duration);
-
-		/* Generate delay dropdown content */
-		$.each(delayObj, function(i, e) {
-			var $optSelected = (delayObj[i] == mediaObj[selFileIndex].delay) ? " SELECTED" : "";
-			$('#select_delay').append('<option class="generated" value="' + e + '"' + $optSelected + '>' + e + ' seconds</option>')
-		});
-		$('#select_delay').selectmenu('refresh');
-		
-		/* Generate positions list for selected file */
-		var $posHtmlPre = '<li class="generated"><a href=""><span class="ui-li-count">';
-		var $posHtmlPost = 'class="btn-pos-popup" href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window">Configure</a></li>';
-		var $posHtmlEnd = '<li class="generated" data-icon="plus"><a href="#popup-pos" class="btn-pos-popup" data-posobj="-1" data-rel="popup" data-transition="pop" data-position-to="window" style="text-align: center">Add new ...	</a></li>'
-		$.each(mediaObj[selFileIndex].positions, function(i, e) {
-			$tmpName = (e.name.trim() == "") ? "Untitled" : e.name;
-			$('#list_pos').append($posHtmlPre + timeDispStr(e.position) + '</span>' + $tmpName + '</a><a data-posobj="' + i + '" ' + $posHtmlPost);
-		});
-		$('#list_pos').append($posHtmlEnd);									
-		$('#list_pos').listview('refresh');
-		$('#div_mediacontrol').show();
-		$('#div_list').show('slow');
-	}
-
-}
 

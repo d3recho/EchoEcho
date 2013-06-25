@@ -16,6 +16,13 @@ function savePositionObj() {
 	updateBodyUI();
 }
 
+function mediaFileChanged() {
+	playbackControl('stop');
+	selFileIndex = $('#select_file option:selected').val();
+	adjustPositionSlider();
+	updateBodyUI();
+}
+
 function removePositionObj() {
 	var selPositionIndex = $('#popup-pos').data('posobj');
 	mediaObj[selFileIndex].positions.splice(selPositionIndex, 1);
@@ -43,16 +50,39 @@ function loadPositionObj(that) {
 	}
 }
 
+function playFromPosition(that) {
+	playbackControl('stop');
+	updateSlider(that.data('pos'));
+	delayBeforePlayback();	
+}
+
+function delayBeforePlayback() {
+	// check if delay is more than 0
+	var delay = mediaObj[selFileIndex].delay;
+	if (delay > 0) {
+		$('#song-position').text(timeDispStr(delay)).prepend("-");
+		$('#song-position').addClass("delaying");
+		delayTimer = setInterval(function() {
+			delayCountdown();
+		}, 1000);
+	}
+}
+
 function slidePositionChanged() {
 	sliderPos = $('#pos-slider').val();
 	$('#song-position').text(timeDispStr(sliderPos));
 }
-
+/* Media control logic, don't mess with this */
 function playbackControl(action) {
 	clearTimeout(playbackTimer);
+	if ($('#song-position').hasClass('delaying')) {
+		$('#song-position').removeClass('delaying');
+		clearTimeout(delayTimer);
+		action = 'stop';
+	}
 	switch(action) {
 		case 'play': 
-			if (isPlayingBack) {
+			if (!isPaused && isPlayingBack) {
 				updateSlider(0);
 			}
 			isPaused = false;
@@ -63,7 +93,6 @@ function playbackControl(action) {
 			break;
 		case 'pause': 
 			if (isPaused) {
-				isPaused = false;
 				playbackControl('play');
 			} 
 			else if (isPlayingBack) {
