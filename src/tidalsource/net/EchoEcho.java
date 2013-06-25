@@ -32,5 +32,5 @@ public class EchoEcho extends DroidGap
         super.loadUrl(Config.getStartUrl());
         //super.loadUrl("file:///android_asset/www/index.html")
     }
-}
+} 
 

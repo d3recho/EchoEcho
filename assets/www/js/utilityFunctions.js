@@ -31,7 +31,7 @@ function updateBodyUI() {
 		var $posHtmlPre = '<li class="generated"><a href="" class="btn-play-pos" ';
 		var $posHtmlMid = '<span class="ui-li-count">';
 		var $posHtmlPost = 'class="btn-pos-popup" href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window">Configure</a></li>';
-		var $posHtmlEnd = '<li class="generated" data-icon="plus"><a href="#popup-pos" class="btn-pos-popup" data-posobj="-1" data-rel="popup" data-transition="pop" data-position-to="window" style="text-align: center">Add new ...	</a></li>'
+		var $posHtmlEnd = '<li class="generated" data-icon="plus"><a href="#popup-pos" class="btn-pos-popup" data-transition="fade" data-posobj="-1" data-rel="popup" data-position-to="window" style="text-align: center">Add new ...	</a></li>'
 		$.each(mediaObj[selFileIndex].positions, function(i, e) {
 			$tmpName = (e.name.trim() == "") ? "Untitled" : e.name;
 			$position = 'data-pos="' + e.position + '"';
@@ -40,7 +40,7 @@ function updateBodyUI() {
 		});
 		$('#list_pos').append($posHtmlEnd);									
 		$('#list_pos').listview('refresh');
-		$('#div_list').show('slow');
+		$('#div_list').show();
 	}
 
 }
