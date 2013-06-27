@@ -3,6 +3,7 @@
 #################
 
 %resources/
+gen/
 [Rr]elease.win32/
 [Dd]ebug.win32/
 

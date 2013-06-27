@@ -2,30 +2,30 @@ function savePositionObj() {
 	var selPositionIndex = $('#popup-pos').data('posobj');
 	if (selPositionIndex == -1) {
 	/* Create new */
-		mediaObj[selFileIndex].positions.push({
+		gMediaObj[gSelFileIndex].positions.push({
 			'position': timeGetSeconds(), 
 			'name': $('#pos-name').val()
 		});
 	}
 	/* Update current */
 	else {
-		mediaObj[selFileIndex].positions[selPositionIndex].position = timeGetSeconds();
-		mediaObj[selFileIndex].positions[selPositionIndex].name = $('#pos-name').val();
+		gMediaObj[gSelFileIndex].positions[selPositionIndex].position = timeGetSeconds();
+		gMediaObj[gSelFileIndex].positions[selPositionIndex].name = $('#pos-name').val();
 	}
 	setObjToStorage();
 	updateBodyUI();
 }
 
-function mediaFileChanged() {
+function gMediaFileChanged() {
 	playbackControl('stop');
-	selFileIndex = $('#select_file option:selected').val();
+	gSelFileIndex = $('#select-file option:selected').val();
 	adjustPositionSlider();
 	updateBodyUI();
 }
 
 function removePositionObj() {
 	var selPositionIndex = $('#popup-pos').data('posobj');
-	mediaObj[selFileIndex].positions.splice(selPositionIndex, 1);
+	gMediaObj[gSelFileIndex].positions.splice(selPositionIndex, 1);
 	setObjToStorage();
 	updateBodyUI();
 }
@@ -42,68 +42,85 @@ function loadPositionObj(that) {
 	if (selPositionIndex == -1) $('#pos-delete').hide();
 	else {
 		$('#pos-delete').show();
-		var seconds = mediaObj[selFileIndex].positions[selPositionIndex].position;
-		var posName = mediaObj[selFileIndex].positions[selPositionIndex].name;
+		var seconds = gMediaObj[gSelFileIndex].positions[selPositionIndex].position;
+		var posName = gMediaObj[gSelFileIndex].positions[selPositionIndex].name;
 		$('#pos-minute').val(timeDispStr_x(seconds, "min"));
 		$('#pos-second').val(timeDispStr_x(seconds, "sec"));
 		$('#pos-name').val(posName);			
 	}
 }
 
-function playFromPosition(that) {
-	playbackControl('stop');
-	updateSlider(that.data('pos'));
-	delayBeforePlayback();	
-}
-
-function delayBeforePlayback() {
-	// check if delay is more than 0
-	var delay = mediaObj[selFileIndex].delay;
-	if (delay > 0) {
-		$('#song-position').text(timeDispStr(delay)).prepend("-");
-		$('#song-position').addClass("delaying");
-		delayTimer = setInterval(function() {
-			delayCountdown();
-		}, 1000);
+function userSeekAtPosition() {
+	if (gSliderPos != $('#pos-slider').val()) {
+		gSliderPos = $('#pos-slider').val();
+		$('#song-position').text(timeDispStr(gSliderPos));
+		mediaControl('seek', gSliderPos);
 	}
 }
 
-function slidePositionChanged() {
-	sliderPos = $('#pos-slider').val();
-	$('#song-position').text(timeDispStr(sliderPos));
-}
 /* Media control logic, don't mess with this */
-function playbackControl(action) {
-	clearTimeout(playbackTimer);
+function mediaControl(action, pos) {
 	if ($('#song-position').hasClass('delaying')) {
 		$('#song-position').removeClass('delaying');
-		clearTimeout(delayTimer);
-		action = 'stop';
+		clearTimeout(gDelayTimer);
+		updateUISlider(0);
+		debug('cleared delaying');
+		if (action != 'delayed') return;
 	}
+	if (action != 'seek') clearTimeout(gPlaybackTimer);
+	debug(action + " " + pos);
 	switch(action) {
 		case 'play': 
-			if (!isPaused && isPlayingBack) {
-				updateSlider(0);
-			}
-			isPaused = false;
-			isPlayingBack = true;
-			playbackTimer = setInterval(function() {
-				updateSlider();
+			if (gMediaFile == undefined) loadMediaFile();
+			else if (gMediaStatus == Media.MEDIA_RUNNING) {
+				gMediaFile.stop();
+				updateUISlider(0);
+			}			
+			gMediaFile.play();
+			gPlaybackTimer = setInterval(function() {
+				gMediaFile.getCurrentPosition(function(position) {
+					updateUISlider(Math.round(position));
+				});
 			}, 1000);
 			break;
 		case 'pause': 
-			if (isPaused) {
-				playbackControl('play');
-			} 
-			else if (isPlayingBack) {
-				isPaused = true;
-				isPlayingBack = false;
-			}
+			if (gMediaStatus == Media.MEDIA_PAUSED) mediaControl('play', null);
+			else if (gMediaStatus == Media.MEDIA_RUNNING) gMediaFile.pause();
 			break;
 		case 'stop':
-			isPaused = false;
-			isPlayingBack = false;
-			updateSlider(0);
+			if (gMediaFile != undefined && gMediaStatus != Media.MEDIA_STOPPED) {
+				gMediaFile.stop();
+				updateUISlider(0);
+			}
 			break;
+		case 'seek':
+				gMediaFile.seekTo(pos * 1000);
+			break;
+		case 'delayed':
+			if (gMediaFile == undefined) loadMediaFile();
+			else if (gMediaStatus != Media.MEDIA_STOPPED) gMediaFile.stop();
+			gMediaFile.seekTo(pos * 1000);
+			updateUISlider(pos);
+			var delay = gMediaObj[gSelFileIndex].delay;
+			if (delay > 0) {
+				/* Delay before playback */
+				$('#song-position').text(timeDispStr(delay)).prepend("-");
+				$('#song-position').addClass("delaying");
+				gDelayTimer = setInterval(function() {
+					var tmpStr = $('#song-position').text();
+					var seconds = Number(tmpStr.substr(tmpStr.indexOf(":") + 1));
+					if (seconds > 1) $('#song-position').text(timeDispStr(seconds - 1)).prepend("-");
+					else {
+						clearTimeout(gDelayTimer);
+						$('#song-position').removeClass('delaying');
+						updateUISlider(pos);
+						mediaControl('play', null);
+						gMediaFile.seekTo(pos * 1000);
+					}
+				}, 1000);
+			} 
+			else mediaControl('play', null);
+		break;
 	}
 }
+

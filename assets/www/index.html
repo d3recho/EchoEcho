@@ -22,10 +22,11 @@
 					<a href="#config" class="ui-btn-right" data-role="button" data-inline="true" data-icon="gear" data-rel="dialog" data-transition="flip">Config</a>
 			</div>
 
-			<div id="main_content" data-role="content" class="ui-content">
+			<div id="main-content" data-role="content" class="ui-content">
+				<div style="display:none" id="debug-console" class="debug-console"></div>
 			
 				<!-- Dropdown main file -->
-				<select name="select_file" id="select_file" data-corners="false" data-native-menu="false" data-placeholder="false" data-icon="bars">
+				<select name="select-file" id="select-file" data-corners="false" data-native-menu="false" data-placeholder="false" data-icon="bars">
 					<option value="">Select file</option>
 				</select>
 				
@@ -35,10 +36,10 @@
 				</div>
 				
 				<!-- Slider song position -->
-				<input id="pos-slider" type="range" name="pos-slider" value="0" min="0" max="0" data-highlight="true" />
+				<input id="pos-slider" type="range" name="pos-slider" value="0" min="0" max="0" disabled data-highlight="true" />
 				
 				<!-- Media controls and delay dropdown -->
-				<div id="div_mediacontrol">
+				<div id="div-mediacontrol">
 					<div data-role="controlgroup" data-shadow="true" data-type="horizontal" style="display:inline-block; white-space: nowrap">
 						<a href="#" id="play" data-role="button" data-icon="play">Play</a>
 						<a href="#" id="pause" data-role="button" data-icon="pause">Pause</a>
@@ -47,14 +48,14 @@
 				</div>
 
 				<!-- List of positions -->
-				<div id="div_list" style="display:none">
-					<ul id="list_pos" data-role="listview" data-inset="true" data-split-theme="c" data-split-icon="grid">
+				<div id="div-list" style="display:none">
+					<ul id="list-pos" data-role="listview" data-inset="true" data-split-theme="c" data-split-icon="grid">
 					</ul>
 				</div>
 				<!-- Delay dropdown -->
 				<div data-role="fieldcontain" class="ui-br">
-				<label for="select_delay" style="display:inline-block">Delayed playback</label>
-				<select name="select_delay" id="select_delay" style="display:inline-block" data-corners="false" data-native-menu="false" data-inline="true">
+				<label for="select-delay" style="display:inline-block">Delayed playback</label>
+				<select name="select-delay" id="select-delay" style="display:inline-block" data-corners="false" data-native-menu="false" data-inline="true">
 				</select>
 				</div>
 			</div>
