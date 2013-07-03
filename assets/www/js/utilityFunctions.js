@@ -1,15 +1,20 @@
 function debug(str) {
 	if (gEnableConsole) {
+		clearTimeout(gDebugTimer);
 		var now = $.now()/1000;
 		if ($('#debug-console').is(':hidden')) {
 			$('#debug-console').show('slow');
 		}
 		$('#debug-console').html('<span>' + now.toString().substr(7, 5) + ':</span> ' + str + "<br>\n" + $('#debug-console').html());
+		gDebugTimer = setTimeout(function() {
+			$('#debug-console').hide('slow')}
+		, 3000);
 	}
 }
 
 /* Get Object from local storage */
-function getObjFromStorage() {
+function loadFromStorage() {
+	debug('loadFromStorage()');
 	gMediaObj = localStorage.getItem("gMediaObjects");
 	gMediaObj = JSON.parse(gMediaObj);
 	if (gMediaObj === null) {
@@ -18,45 +23,44 @@ function getObjFromStorage() {
 }	
 
 function loadMediaFile() {
-	var src = gMediaObj[gSelFileIndex].path;
-	gMediaFile = new Media(src, onSuccessMedia, onErrorMedia, onMediaStatus);
-	debug('Loaded mediafile');
+	debug('loadMediaFile()');
+	var mSrc = gMediaObj[gSelFileIndex].path;
+	gMediaFile = new Media(mSrc, onSuccessMedia, onErrorMedia, onMediaStatus);
 }
 
-
-
 function updateTopUI() {
+	debug('updateTopUI()');
 	/* Generate file dropdown content */
 	$('.generated-file').remove();
 	$.each(gMediaObj, function(i, e) {
-		var $optSelected = (i === gSelFileIndex) ? " SELECTED" : "";
+		var $optSelected = (i == gSelFileIndex) ? " SELECTED" : "";
 		$tmpTitle = (e.title.trim() == "") ? "Untitled" : e.title + " (" + timeDispStr(e.duration) + ")";
 		$('#select-file').append('<option class="generated-file" value="' + i + '"' + $optSelected + '>' + $tmpTitle + '</option>');
 	});
-	$('#select-file').append('<option class="" value="-1">Add new ...</option>');
+	$('#select-file').append('<option class="generated-file" value="-1">Add new ...</option>');
 	$('#select-file').selectmenu('refresh');
-	adjustPositionSlider();
+	initializePositionSlider();
 
 }
 
 function updateBodyUI() {
-	/* Clear generated elements */
+	debug('updateBodyUI()');
 	$('.generated').remove();
 	$('#div-list').hide();
-	
-	if (gMediaObj.length > 0 && gSelFileIndex >= 0) {	
+	$('#div-delay').hide();
+	if (gMediaObj.length > 0 && gSelFileIndex != -1) {	
 		generateDelayDropdown();
 		/* Generate positions list for selected file */
 		var $posHtmlPre = '<li class="generated"><a href="" class="btn-play-pos" ';
 		var $posHtmlMid = '<span class="ui-li-count">';
 		var $posHtmlPost = 'class="btn-pos-popup" href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window">Configure</a></li>';
-		var $posHtmlEnd = '<li class="generated" data-icon="plus"><a href="#popup-pos" class="btn-pos-popup" data-transition="pop" data-posobj="-1" data-rel="popup" data-position-to="window" style="text-align: center">Add new ...	</a></li>'
 		$.each(gMediaObj[gSelFileIndex].positions, function(i, e) {
 			$tmpName = (e.name.trim() == "") ? "Untitled" : e.name;
 			$position = 'data-pos="' + e.position + '"';
 			$posObject = 'data-posobj="' + i + '"';
 			$('#list-pos').append($posHtmlPre + $position + ' ' + $posObject + '>' + $posHtmlMid + timeDispStr(e.position) + '</span>' + $tmpName + '</a><a ' + $posObject + ' ' + $posHtmlPost);
 		});
+		var $posHtmlEnd = '<li class="generated" data-icon="plus"><a href="#popup-pos" class="btn-pos-popup" data-transition="pop" data-posobj="-1" data-rel="popup" data-position-to="window" style="text-align: center">Add new ...	</a></li>'
 		$('#list-pos').append($posHtmlEnd);									
 		$('#list-pos').listview('refresh');
 		$('#div-list').show();
@@ -64,14 +68,18 @@ function updateBodyUI() {
 
 }
 
-function adjustPositionSlider() {
+function initializePositionSlider() {
+	debug('initializePositionSlider()');
 	/* Adjust slider max value, usually when another file is selected */
 	$('#pos-slider').val(0);
-	$('#pos-slider').attr('max', gMediaObj[gSelFileIndex].duration);
+	if (gSelFileIndex != -1) {
+		 $('#pos-slider').attr('max', gMediaObj[gSelFileIndex].duration);
+	}
 	$('#pos-slider').slider("refresh");
 }
 
 function generateDelayDropdown() {
+	$('#div-delay').show();
 	/* Generate delay dropdown content */
 	$.each(gDelayObj, function(i, e) {
 		var $optSelected = (gDelayObj[i] == gMediaObj[gSelFileIndex].delay) ? " SELECTED" : "";
@@ -81,7 +89,7 @@ function generateDelayDropdown() {
 }
 
 /* Set Object to local storage */
-function setObjToStorage() {
+function saveToStorage() {
 	localStorage.setItem("gMediaObjects", JSON.stringify(gMediaObj));
 }	
 
@@ -121,23 +129,26 @@ function updateUISlider(pos) {
 	}
 }
 
+/* For json data printout in config */
 
-/*  Media onSuccess Callback callback */
-function onSuccessMedia() {
-	debug('media load success');
+function syntaxHighlight(json) {
+    if (typeof json != 'string') {
+         json = JSON.stringify(json, undefined, 2);
+    }
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+        var cls = 'number';
+        if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+                cls = 'key';
+            } else {
+                cls = 'string';
+            }
+        } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+        } else if (/null/.test(match)) {
+            cls = 'null';
+        }
+        return '<span class="' + cls + '">' + match + '</span>';
+    });
 }
-
-/* Media onError Callback callback  */
-function onErrorMedia(error) {
-	alert('error code: '    + error.code    + '\n' + 
-		  'error message: ' + error.message + '\n');
-}
-
-/* Media status callback */
-function onMediaStatus(status) {
-	gMediaStatus = status
-	if (gMediaStatus == Media.MEDIA_STOPPED) $("#pos-slider").slider('disable'); 
-	else $("#pos-slider").slider('enable');
-	debug(status);
-}
-

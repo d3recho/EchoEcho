@@ -53,17 +53,17 @@
 					</ul>
 				</div>
 				<!-- Delay dropdown -->
-				<div data-role="fieldcontain" class="ui-br">
-				<label for="select-delay" style="display:inline-block">Delayed playback</label>
-				<select name="select-delay" id="select-delay" style="display:inline-block" data-corners="false" data-native-menu="false" data-inline="true">
-				</select>
+				<div id="div-delay" data-role="fieldcontain" class="ui-br">
+					<label for="select-delay" style="display:inline-block">Delayed playback</label>
+					<select name="select-delay" id="select-delay" style="display:inline-block" data-corners="false" data-native-menu="false" data-inline="true">
+					</select>
 				</div>
 			</div>
-			
+
 			<!-- Popup configure positions -->
 			<div data-role="popup" id="popup-pos" data-corners="false" data-dismissible="true">
 				<div data-role="header"><h4>Position entry</h4></div>
-				<div class="ui-content">					
+				<div class="ui-content">
 					<input type="text" name="pos-name" id="pos-name" value="" placeholder="Enter short description" />
 					<div style="width: 100%;">
 					<div style="width: 45%; display: inline-block;">
@@ -104,6 +104,8 @@
 			<div data-role="content">
 				<p>Configuration </p>
 				<a href="" id="load-dev-json-data" data-role="button" data-rel="back">Load development JSON data</a>
+				<a href="" id="load-data" data-role="button">Examine stored data</a>
+				<div id="data"></div>
 			</div>
 		</div>
 		

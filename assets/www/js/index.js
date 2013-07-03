@@ -3,14 +3,16 @@ var gSelFileIndex = 0;
 var gMediaObj;
 var gPlaybackTimer;
 var gDelayTimer;
+var gDebugTimer;
 var gSliderPos = 0;
-var gMediaStatus = 0;
+var gMediaStatus;
 var gMediaFile = null;
-
+var mMedia; 
+var gInitSeekTo = 0;	// when audio positioned start is used before file is loaded, triggered by callback
 var isUserTouchingSlider = false;
 
 var gEnableConsole = true;	// my debugging console window
-var dev_json_data = '[{"title":"Macarone","path":"/sdcard/Music/Radiohead - In Rainbows/09 - Radiohead - Jigsaw Falling Into Place.MP3","delay":3,"duration":18,"positions":[{"position":0,"name":"Play from beginning"},{"position":5,"name":""},{"position":220,"name":"second position"}]},{"title":"Song two","path":"/sdcard/music/a.mp3","delay":2,"duration":400,"positions":[{"position":0,"name":"Play from beginning"},{"position":20,"name":"whatever here"},{"position":40,"name":"let it spin"}]},{"title":"Song three","path":"/sdcard/music/a.mp3","delay":3,"duration":160,"positions":[{"position":0,"name":"Play from beginning"},{"position":10,"name":"around around"},{"position":70,"name":"make some more"},{"position":130,"name":"hit my jelly"}]}]';							
+var dev_json_data = '[{"title":"Macarone","path":"/sdcard/Music/Radiohead - In Rainbows/09 - Radiohead - Jigsaw Falling Into Place.MP3","delay":3,"duration":18,"positions":[{"position":0,"name":"Play from beginning"},{"position":5,"name":""},{"position":220,"name":"second position"}]},{"title":"Song two","path":"/sdcard/music/a.mp3","delay":2,"duration":400,"positions":[{"position":0,"name":"Play from beginning"},{"position":20,"name":"whatever here"},{"position":40,"name":"let it spin"}]},{"title":"Song three","path":"/sdcard/music/a.mp3","delay":3,"duration":160,"positions":[{"position":0,"name":"Play from beginning"},{"position":10,"name":"around around"},{"position":70,"name":"make some more"},{"position":130,"name":"hit my jelly"}]}]';
 
 var app = {
     initialize: function() {
@@ -33,12 +35,12 @@ $(document).ready(function() {
 	
 	/* File change event for select */	
 	$('#select-file').on('change', function() {
-		gMediaFileChanged();
+		mediaEntryChanged($(this));
 	});
 	
 	/* Position config Delay change event for select */
 	$('#select-delay').on('change', function() {
-		gMediaObj[gSelFileIndex].delay = $('#select-delay option:selected').val();
+		changeDelayValue();
 	});	
 
 	/* Slider Position change event */
@@ -97,12 +99,24 @@ $(document).ready(function() {
 	/* Load development default json data */
 	$('#load-dev-json-data').on('tap', function() {
 		localStorage.setItem("gMediaObjects", dev_json_data);
-		getObjFromStorage();
+		loadFromStorage();
 		updateTopUI();
 		updateBodyUI();
 		alert('Set.');
 	});			
 
+	/* Show current json data */
+	$('#load-data').on('tap', function() {
+		
+		$('#data').hide('fast').html("<pre>" + syntaxHighlight(JSON.parse(localStorage.getItem("gMediaObjects"))) + "</pre>").show('fast');
+	});
+	
+	/* Debug related */
+	$('#debug-console').on('tap', function() {
+		clearTimeout(gDebugTimer);
+	});
+
+	
 /* For faster clicks */
 $.event.special.tap = {
   // Abort tap if touch lasts longer than half a second
@@ -143,10 +157,11 @@ $.event.special.tap = {
 };
 	
 	
-	
-	getObjFromStorage();
-	updateTopUI();
-	updateBodyUI();
+	setTimeout(function() {
+		loadFromStorage();
+		updateTopUI();
+		updateBodyUI();
+	}, 100);
 	
 });
 
