@@ -24,9 +24,9 @@ var app = {
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
     },
-    onDeviceReady: function() {
-		
+    onDeviceReady: function() {		
         app.receivedEvent('deviceready');
+		document.addEventListener("pause", onPause, false);
     },
     receivedEvent: function(id) {
         //console.log('Received Event: ' + id);
@@ -42,10 +42,22 @@ $(document).ready(function() {
 		});
 	}, 1000);
 	
-	/* File change event for select */	
-	$('#select-file').on('change', function() {
-		mediaEntryChanged($(this));
+	/* Change media file button click */	
+	$('#select-file').on('tap', function() {
+		popupMediaFileChange();
 	});
+	
+	/* Media file changed event  */	
+	$('#popup-mediaselect')
+		.on('tap', '.mediafile', function() {
+			mediaFileChanged($(this).data('index'));
+			return false;
+		})
+		.on('tap', '.file-delete', function() {
+			if (confirm("Are you sure you wish to delete this entry?")) {
+				removeMediaEntry($(this).data('index'));
+			}
+		});
 	
 	/* Position config Delay change event for select */
 	$('#select-delay').on('change', function() {
@@ -66,14 +78,12 @@ $(document).ready(function() {
 			$('#pos-slider').off('change');
 		});
 
-	/* Remove Position config click event */
-	$('#pos-del-this').on('tap', function() {
-		removePosition();
-	});
-	
-	/* Remove Position Set config click event */
-	$('#pos-del-all').on('tap', function() {
-		removePositionSet();
+	/* Remove position click event */
+	$('#pos-delete').on('tap', function() {
+		if (confirm("Are you sure you wish to delete this entry?")) {
+			$('#popup-pos').popup('close');
+			removePosition();
+		}
 	});
 	
 	/* Save Position config click event */
@@ -107,9 +117,7 @@ $(document).ready(function() {
 
 	/* Pause button click event */
 	$('#pause').on('tap', function() {
-		//mediaControl('pause', null);
-		getFileSystem();
-		$.mobile.changePage('#filesystem', 'slide', true, true);
+		mediaControl('pause', null);
 	});
 	
 	/* Stop button click event */
@@ -121,7 +129,7 @@ $(document).ready(function() {
 	$('#load-dev-json-data').on('tap', function() {
 		localStorage.setItem("gMediaObjects", dev_json_data);
 		loadFromStorage();
-		updateTopUI();
+		updateMediaFileText();
 		updateBodyUI();
 		alert('Set.');
 	});			
@@ -204,7 +212,7 @@ $.event.special.tap = {
 	
 	setTimeout(function() {
 		loadFromStorage();
-		updateTopUI();
+		//updateTopUI();
 		updateBodyUI();
 	}, 100);
 	

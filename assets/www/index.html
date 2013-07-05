@@ -19,16 +19,24 @@
 		
 			<div data-role="header">
 					<h1 class="ui-title">Echo Echo</h1>
-					<a href="#config" class="ui-btn-right" data-role="button" data-inline="true" data-icon="gear" data-rel="dialog" data-transition="flip">Config</a>
+					<a href="#config" class="ui-btn-right" data-role="button" data-inline="true" data-icon="gear" data-corners="true" data-rel="page" data-transition="flip">Config</a>
 			</div>
 
 			<div id="main-content" data-role="content" class="ui-content">
 				<div style="display:none" id="debug-console" class="debug-console"></div>
 			
-				<!-- Dropdown main file -->
-				<select name="select-file" id="select-file" data-corners="false" data-native-menu="false" data-placeholder="false" data-icon="bars">
-					<option value="">Select file</option>
-				</select>
+				<!-- Select media file -->
+				<div id="div-mediafile">
+					<a href="#popup-mediaselect" id="select-file" class="select-file" 
+						data-transition="flow" 
+						data-positionto="window" 
+						data-rel="popup" 
+						data-role="button" 
+						data-icon="bars" 
+						data-iconpos="right" 
+						data-corners="false"
+						>Select a file...</a>
+				</div>
 				
 				<!-- Song details -->
 				<div id="details">
@@ -40,7 +48,7 @@
 				
 				<!-- Media controls and delay dropdown -->
 				<div id="div-mediacontrol">
-					<div data-role="controlgroup" data-shadow="true" data-type="horizontal" style="">
+					<div data-role="controlgroup" data-type="horizontal" style="">
 						<a href="#" id="play" class="controls" data-role="button" data-icon="play">Play</a>
 						<a href="#" id="pause" class="controls" data-role="button" data-icon="pause">Pause</a>
 						<a href="#" id="stop" class="controls" data-role="button" data-icon="stop">Stop</a>
@@ -53,10 +61,21 @@
 					</ul>
 				</div>
 				<!-- Delay dropdown -->
-				<div id="div-delay" data-role="fieldcontain" class="ui-br">
+				<div id="div-delay" data-role="fieldcontain" data-native-menu="true" class="ui-br">
 					<label for="select-delay" style="display:inline-block">Delayed playback</label>
 					<select name="select-delay" id="select-delay" style="display:inline-block" data-corners="false" data-native-menu="false" data-inline="true">
 					</select>
+				</div>
+			</div>
+
+			<!-- Popup media file select -->
+			<div data-role="popup" id="popup-mediaselect" data-dismissible="true" data-overlay-theme="a">
+				<div data-role="header">
+					<h4>Select media file</h4>
+				</div>
+				<div class="ui-content">
+					<ul data-role="listview" data-split-theme="f" data-split-icon="delete">
+					</ul>
 				</div>
 			</div>
 
@@ -77,32 +96,26 @@
 					</div>
 					<div data-role="controlgroup" data-type="horizontal">
 						<a id="pos-getcurrent" href="" data-role="button" data-icon="forward">Get position</a>
-						<a id="pos-save" href="#" data-rel="back" data-role="button" data-icon="check" data-iconpos="right">Save</a>
+						<a id="pos-save" href="#" 
+							data-rel="back" 
+							data-role="button" 
+							data-icon="check" 
+							data-iconpos="right"
+							>Save</a>
 					</div>
 					<div data-role="controlgroup" data-type="horizontal">
 						<a id="pos-cancel" href="#" data-rel="back" data-role="button">Cancel</a>
-						<a id="pos-delete" href="#confirm-delete" data-iconpos="right" data-rel="popup" data-role="button" data-icon="delete" data-transition="" data-position-to="window">Delete</a>
-					</div>
-				</div>
-				<!-- Popup delete positions -->
-				<div data-role="popup" id="confirm-delete" data-overlay-theme="a" data-theme="e">
-					<div data-role="header"><h4>Confirm action</h4></div>
-					<div class="ui-content">					
-						<span>What would you like to delete?</span>
-						<div data-role="controlgroup">
-							<a id="pos-del-this" href="#" data-rel="back" data-role="button" data-icon="delete">Delete this entry</a>
-							<a id="pos-del-all" href="#" data-rel="back" data-role="button" data-icon="delete">Delete entire set!</a>
-							<a href="#" data-rel="back" data-role="button" >Cancel</a>
-						</div>
+						<a id="pos-delete" href="#" data-iconpos="right" data-role="button" data-icon="delete">Delete</a>
 					</div>
 				</div>
 			</div>
  		</div>
 
 		<!-- Config page -->
-		<div data-role="page" id="config" data-theme="e">
+		<div data-role="page" id="config" data-theme="b">
 			<div data-role="header">
 				<h2>Configure</h2>
+				<a href="" class="ui-btn-right" data-role="button" data-inline="true" data-icon="back" data-rel="back">Return</a>
 			</div>
 			<div data-role="content">
 				<p>Configuration </p>
@@ -113,9 +126,10 @@
 		</div>
 		
 		<!-- File manager page -->
-		<div data-role="dialog" id="filesystem">
+		<div data-role="page" id="filesystem" data-theme="b">
 			<div data-role="header">
-				<h2>Select file</h2>
+				<h2>Select media file</h2>
+				<a href="" class="ui-btn-right" data-role="button" data-inline="true" data-icon="back" data-rel="back">Return</a>
 			</div>
 			<div data-role="content">
 				<div id="fs" class="ui-controlgroup">

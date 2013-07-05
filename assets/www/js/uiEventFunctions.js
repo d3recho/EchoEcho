@@ -1,3 +1,13 @@
+function onPause() {
+	clearTimeout(gDelayTimer);
+	clearTimeout(gPlaybackTimer);
+	if (gMediaFile != undefined && gMediaStatus == Media.MEDIA_RUNNING) {
+		volumeFade(1, 0, 100);
+		setTimeout(function() { 	gMediaFile.pause();	}, 100);
+	}
+}
+
+
 function savePositionObj() {
 	var selPositionIndex = $('#popup-pos').data('posobj');
 	if (selPositionIndex == -1) {
@@ -27,22 +37,29 @@ function setTimeAudioPosEntry() {
 	}, function() {});
 }
 
-function mediaEntryChanged(that) {
-	if ($('#select-file option:selected').val() != -1) {
+function popupMediaFileChange() {
+	updateTopUI();
+}
+
+function mediaFileChanged(index) {
+	if (index != -1) {
 		// Changed to another audio file
-		gSelFileIndex = $('#select-file option:selected').val();
+		$('#popup-mediaselect').popup('close');
+		gSelFileIndex = index;
+		localStorage.setItem("LastMedia", gSelFileIndex);
 		mediaControl('stop', null);
 		if (gMediaFile) {
 			gMediaFile.release();
 			gMediaFile = null;
 		}
 		initializePositionSlider();
+		updateMediaFileText();
 		updateBodyUI();
 	} 
 	else {
 		// New file selection 
 		getFileSystem();
-		$.mobile.changePage('#filesystem', 'slide', true, true);
+		$.mobile.changePage('#filesystem', {transition: "flip"});
 		
 /*	Old stuff
 		navigator.camera.getPicture(onSuccessBrowseFile, onErrorBrowseFile, { 
@@ -61,12 +78,12 @@ function removePosition() {
 	updateBodyUI();		
 }
 
-function removePositionSet() {
-	gMediaObj.splice(gSelFileIndex, 1);
+function removeMediaEntry(index) {
+	gMediaObj.splice(index, 1);
 	saveToStorage();
 	gSelFileIndex = 0;
-	updateTopUI();
-	mediaEntryChanged();
+	updateMediaFileText();
+	mediaFileChanged(gSelFileIndex);
 }
 
 
@@ -143,7 +160,7 @@ function mediaControl(action, pos) {
 			break;
 		case 'delayed':
 			if (gMediaFile == undefined) loadMediaFile();
-			else if (gMediaStatus != Media.MEDIA_STOPPED) {
+			else if (gMediaStatus != undefined && gMediaStatus != Media.MEDIA_STOPPED) {
 				gMediaFile.stop();
 			}
 			updateUISlider(pos);
@@ -210,7 +227,7 @@ function onSuccessBrowseFile(src) {
 	mMedia = new Media(src, onSuccessMedia, 
 		function() {
 			alert('Could not read file info: ' + src + '\nPerhaps returned path is not correct or file is not compatible.');
-			updateTopUI();
+			updateMediaFileText();
 		}
 	);
 	mMedia.play();
@@ -235,21 +252,24 @@ function onSuccessBrowseFile(src) {
 					'name': 'Play from beginning'
 				}]
 			});
-			gSelFileIndex = gMediaObj.length - 1;
+//			gSelFileIndex = gMediaObj.length - 1;
 			saveToStorage();
 			mMedia.release();
 			mMedia = null;
-			if (gMediaFile) {
+/*			if (gMediaFile) {
 				gMediaFile.release();
 				gMediaFile = null;
 			}
 			loadMediaFile();
-			updateTopUI();
-			updateBodyUI();			
+			updateMediaFileText();
+			updateBodyUI();	*/
+			mediaFileChanged(gMediaObj.length - 1);
+			history.back();
+			return false;
 		}
 	}, 10);
 }
 
 function onErrorBrowseFile(msg) {
-	updateTopUI();
+	updateMediaFileText();
 }

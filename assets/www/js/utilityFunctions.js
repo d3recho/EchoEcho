@@ -15,10 +15,15 @@ function debug(str) {
 /* Get Object from local storage */
 function loadFromStorage() {
 	debug('loadFromStorage()');
+	var _lastMedia = localStorage.getItem("LastMedia");
 	gMediaObj = localStorage.getItem("gMediaObjects");
 	gMediaObj = JSON.parse(gMediaObj);
-	if (gMediaObj === null) {
+	if (gMediaObj == undefined) {
 		gMediaObj = [];
+	}
+	else if (_lastMedia != undefined) {
+		gSelFileIndex = _lastMedia;
+		updateMediaFileText();		
 	}
 }	
 
@@ -31,17 +36,26 @@ function loadMediaFile() {
 function updateTopUI() {
 	debug('updateTopUI()');
 	/* Generate file dropdown content */
-	$('.generated-file').remove();
+	$('#popup-mediaselect ul li').remove();
 	$.each(gMediaObj, function(i, e) {
-		var $optSelected = (i == gSelFileIndex) ? " SELECTED" : "";
-		$tmpTitle = (e.title.trim() == "") ? "Untitled" : e.title + " (" + timeDispStr(e.duration) + ")";
-		$('#select-file').append('<option class="generated-file" value="' + i + '"' + $optSelected + '>' + $tmpTitle + '</option>');
+		var $selectionStyle = (i == gSelFileIndex) ? ' class="ui-focus ui-btn-down-a"' : '';
+		var $tmpTitle = (e.title.trim() == "") ? "Untitled" : e.title;
+		var $tmpPath = e.path.substr(0, e.path.lastIndexOf('/') + 1);
+		$('#popup-mediaselect ul').append('<li' + $selectionStyle + ' data-icon="false"><a class="mediafile" href="" data-index="' + i + '">' 
+			+ $tmpTitle + '<span style="font-size: 0.6em;"><br>' + $tmpPath	+ '</span></a>' 
+			+ '<span class="ui-li-count">' + timeDispStr(e.duration) + '</span>' 
+			+ '<a href="#" class="file-delete" data-index="' + i + '" >Delete</a></li>');
 	});
-	$('#select-file').append('<option class="generated-file" value="-1">Add new ...</option>');
-	$('#select-file').selectmenu('refresh');
-	initializePositionSlider();
-	$('#select-file-button').addClass('ui-focus');
+	$('#popup-mediaselect ul').append('<li data-icon="false"><a class="mediafile" href="" data-index="-1">Add new media file ...</a></li>');
+	$('#popup-mediaselect').parent().css('width', '90%');
+	$('#popup-mediaselect ul').listview('refresh');
+}
 
+function updateMediaFileText() {
+	if (gSelFileIndex != -1) {
+		$('#select-file .ui-btn-text').text(gMediaObj[gSelFileIndex].title);
+	}
+	initializePositionSlider();
 }
 
 function updateBodyUI() {
@@ -52,17 +66,16 @@ function updateBodyUI() {
 	if (gMediaObj.length > 0 && gSelFileIndex != -1) {	
 		generateDelayDropdown();
 		/* Generate positions list for selected file */
-		var $posHtmlPre = '<li class="generated"><a href="" class="btn-play-pos" ';
-		var $posHtmlMid = '<span class="ui-li-count">';
-		var $posHtmlPost = 'class="btn-pos-popup" href="#" data-rel="popup">Configure</a></li>';
 		$.each(gMediaObj[gSelFileIndex].positions, function(i, e) {
-			$tmpName = (e.name.trim() == "") ? "Untitled" : e.name;
-			$position = 'data-pos="' + e.position + '"';
-			$posObject = 'data-posobj="' + i + '"';
-			$('#list-pos').append($posHtmlPre + $position + ' ' + $posObject + '>' + $posHtmlMid + timeDispStr(e.position) + '</span>' + $tmpName + '</a><a ' + $posObject + ' ' + $posHtmlPost);
+			var $tmpName = (e.name.trim() == "") ? "Untitled" : e.name;
+			$('#list-pos').append('<li class="generated"><a href="" class="btn-play-pos" data-pos="' + e.position + '" data-posobj="' + i + '">' 
+				+ $tmpName + '<span class="ui-li-count">' + timeDispStr(e.position) + '</span>'
+				+ '</a><a href="#" data-posobj="' + i + '" class="btn-pos-popup" data-rel="popup">Configure</a></li>');
 		});
-		var $posHtmlEnd = '<li class="generated" data-icon="plus"><a href="#popup-pos" class="btn-pos-popup" data-transition="pop" data-posobj="-1" data-rel="popup" data-position-to="window" style="text-align: center">Add new ...	</a></li>'
-		$('#list-pos').append($posHtmlEnd);									
+		var $posHtmlEnd = '<li class="generated" data-icon="plus">' 
+			+ '<a href="#popup-pos" class="btn-pos-popup" data-posobj="-1" ' 
+			+ 'data-rel="popup" data-position-to="window" style="text-align: center">Add new ...</a></li>';
+		$('#list-pos').append($posHtmlEnd);
 		$('#list-pos').listview('refresh');
 		$('#div-list').show();
 	}
