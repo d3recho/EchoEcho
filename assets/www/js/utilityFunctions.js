@@ -40,6 +40,7 @@ function updateTopUI() {
 	$('#select-file').append('<option class="generated-file" value="-1">Add new ...</option>');
 	$('#select-file').selectmenu('refresh');
 	initializePositionSlider();
+	$('#select-file-button').addClass('ui-focus');
 
 }
 
@@ -53,7 +54,7 @@ function updateBodyUI() {
 		/* Generate positions list for selected file */
 		var $posHtmlPre = '<li class="generated"><a href="" class="btn-play-pos" ';
 		var $posHtmlMid = '<span class="ui-li-count">';
-		var $posHtmlPost = 'class="btn-pos-popup" href="#popup-pos" data-rel="popup" data-transition="pop" data-position-to="window">Configure</a></li>';
+		var $posHtmlPost = 'class="btn-pos-popup" href="#" data-rel="popup">Configure</a></li>';
 		$.each(gMediaObj[gSelFileIndex].positions, function(i, e) {
 			$tmpName = (e.name.trim() == "") ? "Untitled" : e.name;
 			$position = 'data-pos="' + e.position + '"';
@@ -93,11 +94,6 @@ function saveToStorage() {
 	localStorage.setItem("gMediaObjects", JSON.stringify(gMediaObj));
 }	
 
-function setTimeAudioPosEntry() {
-	$('#pos-minute').val(timeDispStr_x($('#pos-slider').val(), "min"));
-	$('#pos-second').val(timeDispStr_x($('#pos-slider').val(), "sec"));
-}
-
 /* Returns a string of time from time stored in obj */
 function timeDispStr(nTime) {
 	if (isNaN(nTime)) return "error";
@@ -109,7 +105,9 @@ function timeDispStr(nTime) {
 /* Helper for timeDispStr() and where we just want minutes or seconds */
 function timeDispStr_x(nTime, scale) {
 	if (scale == "min") return Math.floor(nTime / 60);
-	else if (scale == "sec") return nTime % 60;
+	else if (scale == "sec") {
+		return ((nTime * 10) % 600) / 10; // Got floating num errors otherwise
+	}
 }
 
 /* Returns seconds to store in obj */ 
@@ -129,8 +127,20 @@ function updateUISlider(pos) {
 	}
 }
 
-/* For json data printout in config */
+function volumeFade(from, to, duration) {
+	var _from = {property: from};
+	var _to = {property: to};
+	$(_from).animate(_to, {
+		duration: duration,
+		step: function() {
+			if (gMediaFile == undefined) return;
+			gMediaFile.setVolume(this.property);
+		},
+		easing: "swing"
+	});
+}
 
+/* For json data printout in config */
 function syntaxHighlight(json) {
     if (typeof json != 'string') {
          json = JSON.stringify(json, undefined, 2);
@@ -151,4 +161,41 @@ function syntaxHighlight(json) {
         }
         return '<span class="' + cls + '">' + match + '</span>';
     });
+}
+
+/* File system */
+function getFileSystem() {
+	window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fs) {	// on success
+		root = fs.root;
+		listDirectory(root);
+	}, function() {});
+}
+
+/* List files in a directory*/
+function listDirectory(dir) {
+	if (!dir.isDirectory) alert("Not a directory, error");
+	var dirReader = dir.createReader();
+	currentDir = dir;
+	var dirs = [];
+	var files = [];
+	// show loading animation
+	dirReader.readEntries(function(entries) {
+		for (var i = 0; i < entries.length; i++) {
+			if (entries[i].isDirectory && entries[i].name[0] != ".") dirs.push(entries[i]);
+			else if (entries[i].isFile && entries[i].name[0] != ".") files.push(entries[i]);
+		}
+		dirs.sort();
+		files.sort();
+		var dirsHtml = "";
+		var filesHtml = "";
+		for (var i = 0; i < dirs.length; i++) {
+			dirsHtml += '<div class="filesystem folders">' + dirs[i].name + '</div>\n';
+		}
+		for (var i = 0; i < files.length; i++) {
+			filesHtml += '<div class="filesystem files">' + files[i].name + '</div>\n';
+		}
+		var parentHtml = (root.fullPath != currentDir.fullPath) ? '<div class="filesystem folders parent">-1</div>\n' : '';
+		$('#filesystem #fs').html(parentHtml + dirsHtml + filesHtml);
+	});
+	
 }

@@ -1,5 +1,5 @@
 var gDelayObj = [0, 2, 3, 5, 10, 20];
-var gSelFileIndex = 0;
+var gSelFileIndex = -1;
 var gMediaObj;
 var gPlaybackTimer;
 var gDelayTimer;
@@ -10,8 +10,10 @@ var gMediaFile = null;
 var mMedia; 
 var gInitSeekTo = 0;	// when audio positioned start is used before file is loaded, triggered by callback
 var isUserTouchingSlider = false;
+var root = null; 		// File System root variable
+var currentDir = null; // Current DirectoryEntry listed
 
-var gEnableConsole = true;	// my debugging console window
+var gEnableConsole = false;	// my debugging console window
 var dev_json_data = '[{"title":"Macarone","path":"/sdcard/Music/Radiohead - In Rainbows/09 - Radiohead - Jigsaw Falling Into Place.MP3","delay":3,"duration":18,"positions":[{"position":0,"name":"Play from beginning"},{"position":5,"name":""},{"position":220,"name":"second position"}]},{"title":"Song two","path":"/sdcard/music/a.mp3","delay":2,"duration":400,"positions":[{"position":0,"name":"Play from beginning"},{"position":20,"name":"whatever here"},{"position":40,"name":"let it spin"}]},{"title":"Song three","path":"/sdcard/music/a.mp3","delay":3,"duration":160,"positions":[{"position":0,"name":"Play from beginning"},{"position":10,"name":"around around"},{"position":70,"name":"make some more"},{"position":130,"name":"hit my jelly"}]}]';
 
 var app = {
@@ -32,6 +34,13 @@ var app = {
 };
 
 $(document).ready(function() { 
+
+	// Possibly patching the initial transition bug on android!?
+	setTimeout(function() {
+		$('#popup-pos').popup("close", {
+			history: false,
+		});
+	}, 1000);
 	
 	/* File change event for select */	
 	$('#select-file').on('change', function() {
@@ -42,7 +51,7 @@ $(document).ready(function() {
 	$('#select-delay').on('change', function() {
 		changeDelayValue();
 	});	
-
+	
 	/* Slider Position change event */
 	$('#pos-slider')
 		.on('slidestart', function() {
@@ -58,8 +67,13 @@ $(document).ready(function() {
 		});
 
 	/* Remove Position config click event */
-	$('#pos-delete-confirm').on('tap', function() {
-		removePositionObj();
+	$('#pos-del-this').on('tap', function() {
+		removePosition();
+	});
+	
+	/* Remove Position Set config click event */
+	$('#pos-del-all').on('tap', function() {
+		removePositionSet();
 	});
 	
 	/* Save Position config click event */
@@ -70,7 +84,12 @@ $(document).ready(function() {
 	/* Click event to retrieve position data for popup */
 	$('#list-pos')
 		.on('tap', '.btn-pos-popup', function() {	
+			$('#popup-pos').popup("open", {
+				overlayTheme: 'a',
+				transition: 'flow'
+			});
 			loadPositionObj($(this));
+			return false;
 		})
 		.on('tap', '.btn-play-pos', function() {
 			mediaControl('delayed', $(this).data('pos'));
@@ -88,9 +107,11 @@ $(document).ready(function() {
 
 	/* Pause button click event */
 	$('#pause').on('tap', function() {
-		mediaControl('pause', null);
+		//mediaControl('pause', null);
+		getFileSystem();
+		$.mobile.changePage('#filesystem', 'slide', true, true);
 	});
-
+	
 	/* Stop button click event */
 	$('#stop').on('tap', function() {
 		mediaControl('stop', null);
@@ -117,6 +138,30 @@ $(document).ready(function() {
 	});
 
 	
+	/* Click on a Folder */
+	$('#fs').on('tap', '.folders', function() {
+		if ($(this).text() == '-1') {
+			currentDir.getParent(function(dir) {
+				listDirectory(dir);
+			}, function() {
+				alert('Already in root folder');
+			});		
+		}
+		else {
+			currentDir.getDirectory($(this).text(), {create: false}, function(dir) {
+				listDirectory(dir);
+			});
+		}
+		return false;
+	});
+
+	/* Click on a File */
+	$('#fs').on('tap', '.files', function() {
+		onSuccessBrowseFile(currentDir.fullPath + "/" + $(this).text());
+		$('#filesystem').dialog('close');
+		return false;
+	});
+	
 /* For faster clicks */
 $.event.special.tap = {
   // Abort tap if touch lasts longer than half a second
@@ -127,7 +172,7 @@ $.event.special.tap = {
 
     // Bind touch start
     $self.on('touchstart', function(startEvent) {
-      // Save the target element of the start event
+		// Save the target element of the start event
       var target = startEvent.target,
         timeout;
 

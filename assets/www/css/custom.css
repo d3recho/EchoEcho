@@ -15,17 +15,17 @@ div.ui-slider {
 }
 
 .ui-icon-play {
-	background-image: url(images/icon-black-circleplay.png);
+	background-image: url('images/icon-white-circleplay.png');
 	background-color: #FFF;
 	background-size: 18px;
 }
 .ui-icon-pause {
-	background-image: url(images/icon-black-circlepause.png);
+	background-image: url('images/icon-white-circlepause.png');
 	background-color: #FFF;
 	background-size: 18px;
 }
 .ui-icon-stop {
-	background-image: url(images/icon-black-circlestop.png);
+	background-image: url('images/icon-white-circlestop.png');
 	background-color: #FFF;
 	background-size: 18px;
 }
@@ -61,3 +61,75 @@ pre { font-size: 0.7em }
 .number { color: red }
 .boolean { color: yellow }
 .null { color: darkyellow }
+
+.ui-controlgroup {
+	display:inline-block; 
+	margin-left: auto; 
+	margin-right: auto; 
+	width: 100%; 
+	text-align: center;
+}
+
+.ui-popup  {
+	border: solid 1px #aaa;
+}
+
+.ui-btn-up-c {
+	border: none;
+}
+
+.ui-btn-inner {
+	font-size: 1.1em;
+}
+
+.ui-li-has-count .ui-li-count {
+	font-size: 0.7em;
+}
+
+.ui-li .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li {
+	padding: 1em 15px;
+}
+
+.controls .ui-btn-inner {
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+.filesystem {
+	color: black; 
+	font-size: 0.8em;
+	text-align: center;
+	vertical-align:bottom;	
+	display: inline-block;
+	overflow: hidden;
+	width: 80px;
+	height: 70px;
+	margin: 3px;
+	padding: 2px;
+	font-weight: bold;
+	border: 1px solid #222;
+	word-wrap: break-word;
+	background-repeat:no-repeat;
+	background-position:center; 
+}
+
+.files {
+	background-image: url('images/icon-file.png');
+}
+
+.folders { 
+	background-image: url('images/icon-dir.png');
+	text-weight: bold;
+}
+
+.parent {
+	font-size:0em;
+	background-image: url('images/icon-parent.png');	
+}
+
+.filesystem:active {
+	background-color: lightblue;
+}
+
+
+	

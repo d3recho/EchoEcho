@@ -15,7 +15,7 @@
         <title>Hello World</title>
     </head>
     <body onload="app.initialize()">
-		<div data-role="page" id="main">
+		<div data-role="page" id="main" data-theme="a">
 		
 			<div data-role="header">
 					<h1 class="ui-title">Echo Echo</h1>
@@ -40,16 +40,16 @@
 				
 				<!-- Media controls and delay dropdown -->
 				<div id="div-mediacontrol">
-					<div data-role="controlgroup" data-shadow="true" data-type="horizontal" style="display:inline-block; white-space: nowrap">
-						<a href="#" id="play" data-role="button" data-icon="play">Play</a>
-						<a href="#" id="pause" data-role="button" data-icon="pause">Pause</a>
-						<a href="#" id="stop" data-role="button" data-icon="stop">Stop</a>
+					<div data-role="controlgroup" data-shadow="true" data-type="horizontal" style="">
+						<a href="#" id="play" class="controls" data-role="button" data-icon="play">Play</a>
+						<a href="#" id="pause" class="controls" data-role="button" data-icon="pause">Pause</a>
+						<a href="#" id="stop" class="controls" data-role="button" data-icon="stop">Stop</a>
 					</div>
 				</div>
 
 				<!-- List of positions -->
 				<div id="div-list" style="display:none">
-					<ul id="list-pos" data-role="listview" data-inset="true" data-split-theme="c" data-split-icon="grid">
+					<ul id="list-pos" data-role="listview" data-inset="true" data-split-theme="f" data-split-icon="grid">
 					</ul>
 				</div>
 				<!-- Delay dropdown -->
@@ -61,7 +61,7 @@
 			</div>
 
 			<!-- Popup configure positions -->
-			<div data-role="popup" id="popup-pos" data-corners="false" data-dismissible="true">
+			<div data-role="popup" id="popup-pos" data-dismissible="true" data-overlay-theme="a">
 				<div data-role="header"><h4>Position entry</h4></div>
 				<div class="ui-content">
 					<input type="text" name="pos-name" id="pos-name" value="" placeholder="Enter short description" />
@@ -74,30 +74,33 @@
 						<label for="">Seconds</label>
 						<input id="pos-second" class="ui-input-text" type="number" value="0" min="0" max="59"></input>
 					</div>					
-					</div>					
-					<a id="pos-getcurrent" href="" data-role="button" data-icon="forward">Get current duration</a>
+					</div>
 					<div data-role="controlgroup" data-type="horizontal">
-						<a id="pos-save" href="#" data-rel="back" data-role="button" data-icon="check">Save</a>
-						<a id="pos-delete" href="#confirm-delete" data-rel="popup" data-role="button" data-icon="delete" data-transition="pop" data-position-to="window" data-iconpos="notext">Delete</a>
-						<a href="#" data-rel="back" data-role="button">Cancel</a>
-					</div>					
+						<a id="pos-getcurrent" href="" data-role="button" data-icon="forward">Get position</a>
+						<a id="pos-save" href="#" data-rel="back" data-role="button" data-icon="check" data-iconpos="right">Save</a>
+					</div>
+					<div data-role="controlgroup" data-type="horizontal">
+						<a id="pos-cancel" href="#" data-rel="back" data-role="button">Cancel</a>
+						<a id="pos-delete" href="#confirm-delete" data-iconpos="right" data-rel="popup" data-role="button" data-icon="delete" data-transition="" data-position-to="window">Delete</a>
+					</div>
 				</div>
-				<div data-role="popup" id="confirm-delete">
-					<div data-role="header"><h4>Confirm deletion</h4></div>
+				<!-- Popup delete positions -->
+				<div data-role="popup" id="confirm-delete" data-overlay-theme="a" data-theme="e">
+					<div data-role="header"><h4>Confirm action</h4></div>
 					<div class="ui-content">					
-						<span>Are you sure you wish to delete this entry?</span>
-						<div data-role="controlgroup" data-type="horizontal">
-							<a id="pos-delete-confirm" href="#" data-rel="back" data-role="button" data-icon="delete">Delete</a>
+						<span>What would you like to delete?</span>
+						<div data-role="controlgroup">
+							<a id="pos-del-this" href="#" data-rel="back" data-role="button" data-icon="delete">Delete this entry</a>
+							<a id="pos-del-all" href="#" data-rel="back" data-role="button" data-icon="delete">Delete entire set!</a>
 							<a href="#" data-rel="back" data-role="button" >Cancel</a>
 						</div>
 					</div>
 				</div>
-			</div>			
+			</div>
+ 		</div>
 
-		</div>
-		
 		<!-- Config page -->
-		<div data-role="page" id="config">
+		<div data-role="page" id="config" data-theme="e">
 			<div data-role="header">
 				<h2>Configure</h2>
 			</div>
@@ -109,5 +112,16 @@
 			</div>
 		</div>
 		
-    </body>
+		<!-- File manager page -->
+		<div data-role="dialog" id="filesystem">
+			<div data-role="header">
+				<h2>Select file</h2>
+			</div>
+			<div data-role="content">
+				<div id="fs" class="ui-controlgroup">
+				</div>
+			</div>
+		</div>
+
+	</body>
 </html>

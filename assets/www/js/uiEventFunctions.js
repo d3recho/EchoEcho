@@ -16,6 +16,17 @@ function savePositionObj() {
 	updateBodyUI();
 }
 
+// Button to get current audio position, with 10th of seconds
+function setTimeAudioPosEntry() {
+	gMediaFile.getCurrentPosition(function(position) {
+		position = (position < 0) ? 0 : position;
+		if (position < 0) position = 0;
+		else position = Math.round(position * 10)/10;
+		$('#pos-minute').val(timeDispStr_x(position, "min"));
+		$('#pos-second').val(timeDispStr_x(position, "sec"));
+	}, function() {});
+}
+
 function mediaEntryChanged(that) {
 	if ($('#select-file option:selected').val() != -1) {
 		// Changed to another audio file
@@ -30,20 +41,34 @@ function mediaEntryChanged(that) {
 	} 
 	else {
 		// New file selection 
+		getFileSystem();
+		$.mobile.changePage('#filesystem', 'slide', true, true);
+		
+/*	Old stuff
 		navigator.camera.getPicture(onSuccessBrowseFile, onErrorBrowseFile, { 
 			sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
 			destinationType: Camera.DestinationType.FILE_URI,
 			mediaType: Camera.MediaType.ALLMEDIA
 		});
+*/
 	}
 }
 
-function removePositionObj() {
+function removePosition() {
 	var selPositionIndex = $('#popup-pos').data('posobj');
 	gMediaObj[gSelFileIndex].positions.splice(selPositionIndex, 1);
 	saveToStorage();
-	updateBodyUI();
+	updateBodyUI();		
 }
+
+function removePositionSet() {
+	gMediaObj.splice(gSelFileIndex, 1);
+	saveToStorage();
+	gSelFileIndex = 0;
+	updateTopUI();
+	mediaEntryChanged();
+}
+
 
 function loadPositionObj(that) {
 	/* set values to fields in popup */
@@ -54,9 +79,13 @@ function loadPositionObj(that) {
 	var selPositionIndex = that.data('posobj');
 	$('#popup-pos').data('posobj', selPositionIndex);
 	/* Hides or shows delete button */
-	if (selPositionIndex == -1) $('#pos-delete').hide();
+	if (selPositionIndex == -1) {
+		$('#pos-delete').hide();
+		$('#pos-cancel').addClass('ui-last-child');
+	}
 	else {
 		$('#pos-delete').show();
+		$('#pos-cancel').removeClass('ui-last-child');
 		var seconds = gMediaObj[gSelFileIndex].positions[selPositionIndex].position;
 		var posName = gMediaObj[gSelFileIndex].positions[selPositionIndex].name;
 		$('#pos-minute').val(timeDispStr_x(seconds, "min"));
@@ -75,6 +104,7 @@ function userSeekAtPosition() {
 
 /* Media control logic, don't mess with this */
 function mediaControl(action, pos) {
+	if (gSelFileIndex == -1) return;
 	debug('action:' + action);
 	if ($('#song-position').hasClass('delaying')) {
 		$('#song-position').removeClass('delaying');
@@ -89,7 +119,7 @@ function mediaControl(action, pos) {
 			else if (gMediaStatus == Media.MEDIA_RUNNING) {
 				gMediaFile.stop();
 				updateUISlider(0);
-			}	
+			}
 			gMediaFile.play();
 			gPlaybackTimer = setInterval(function() {
 				gMediaFile.getCurrentPosition(function(position) {
@@ -99,11 +129,15 @@ function mediaControl(action, pos) {
 			break;
 		case 'pause': 
 			if (gMediaStatus == Media.MEDIA_PAUSED) mediaControl('play', null);
-			else if (gMediaStatus == Media.MEDIA_RUNNING) gMediaFile.pause();
+			else if (gMediaStatus == Media.MEDIA_RUNNING) {
+				volumeFade(1, 0, 100);
+				setTimeout(function() { 	gMediaFile.pause();	}, 100);
+			}
 			break;
 		case 'stop':
 			if (gMediaFile != undefined && gMediaStatus != undefined && gMediaStatus != Media.MEDIA_STOPPED) {
-				gMediaFile.stop();
+				volumeFade(1, 0, 100);
+				setTimeout(function() { 	if (gMediaFile != undefined) gMediaFile.stop();	}, 100);
 				updateUISlider(0);
 			}
 			break;
@@ -162,8 +196,12 @@ function onMediaStatus(status) {
 		updateUISlider(0);
 	}
 	else if (status == Media.MEDIA_RUNNING && gInitSeekTo > 0) {
+		volumeFade(0, 1, 500);	
 		gMediaFile.seekTo(gInitSeekTo);
 		gInitSeekTo = 0;
+	}
+	else if (status == Media.MEDIA_RUNNING) {
+		volumeFade(0, 1, 500);	
 	}
 }
 
@@ -172,6 +210,7 @@ function onSuccessBrowseFile(src) {
 	mMedia = new Media(src, onSuccessMedia, 
 		function() {
 			alert('Could not read file info: ' + src + '\nPerhaps returned path is not correct or file is not compatible.');
+			updateTopUI();
 		}
 	);
 	mMedia.play();
