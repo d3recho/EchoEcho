@@ -14,6 +14,7 @@
 		<script type="text/javascript" src="js/utilityFunctions.js"></script>
         <title>Hello World</title>
     </head>
+	
     <body onload="app.initialize()">
 		<div data-role="page" id="main" data-theme="a">
 		
@@ -24,47 +25,59 @@
 
 			<div id="main-content" data-role="content" class="ui-content">
 				<div style="display:none" id="debug-console" class="debug-console"></div>
-			
-				<!-- Select media file -->
-				<div id="div-mediafile">
-					<a href="#popup-mediaselect" id="select-file" class="select-file" 
-						data-transition="flow" 
-						data-positionto="window" 
-						data-rel="popup" 
-						data-role="button" 
-						data-icon="bars" 
-						data-iconpos="right" 
-						data-corners="false"
-						>Select a file...</a>
-				</div>
-				
-				<!-- Song details -->
-				<div id="details">
-					<h1 id="song-position" style="text-align:center">0:00</h1>
-				</div>
-				
-				<!-- Slider song position -->
-				<input id="pos-slider" type="range" name="pos-slider" value="0" min="0" max="0" disabled data-highlight="true" />
-				
-				<!-- Media controls and delay dropdown -->
-				<div id="div-mediacontrol">
-					<div data-role="controlgroup" data-type="horizontal" style="">
+
+				<div class="ui-block-left">
+					<!-- Select media file -->
+					<div id="div-mediafile">
+						<a href="#popup-mediaselect" id="select-file" class="select-file" 
+							data-transition="flow" 
+							data-positionto="window" 
+							data-rel="popup" 
+							data-role="button" 
+							data-icon="bars" 
+							data-iconpos="right" 
+							data-corners="false"
+							>Select a file...</a>
+					</div>
+					
+					<!-- Song details -->
+					<div id="details">
+						<h1 id="song-position" style="text-align:center">0:00</h1>
+					</div>
+					
+					<!-- Slider song position -->
+					<div id="div-slider">
+						<input id="pos-slider" type="range" name="pos-slider" value="0" min="0" max="0" disabled data-highlight="true" />
+					</div>
+					<!-- Media controls -->
+					<div id="div-mediacontrol" data-role="controlgroup" data-type="horizontal" style="">
 						<a href="#" id="play" class="controls" data-role="button" data-icon="play">Play</a>
 						<a href="#" id="pause" class="controls" data-role="button" data-icon="pause">Pause</a>
 						<a href="#" id="stop" class="controls" data-role="button" data-icon="stop">Stop</a>
 					</div>
+					<!-- Delay dropdown CLONED -->
+					<div class="delay" style="display: none;" >
+						<div id="div-delay-a" data-role="fieldcontain" data-native-menu="true" class="ui-br">
+							<select name="select-delay" id="select-delay-a" style="display:inline-block" data-corners="false" data-native-menu="false" data-inline="true">
+							</select>
+						</div>
+					</div>
 				</div>
-
-				<!-- List of positions -->
-				<div id="div-list" style="display:none">
-					<ul id="list-pos" data-role="listview" data-inset="true" data-split-theme="f" data-split-icon="grid">
-					</ul>
-				</div>
-				<!-- Delay dropdown -->
-				<div id="div-delay" data-role="fieldcontain" data-native-menu="true" class="ui-br">
-					<label for="select-delay" style="display:inline-block">Delayed playback</label>
-					<select name="select-delay" id="select-delay" style="display:inline-block" data-corners="false" data-native-menu="false" data-inline="true">
-					</select>
+				
+				<div class="ui-block-right">
+					<!-- List of positions -->
+					<div id="div-list" style="display:none">
+						<ul id="list-pos" data-role="listview" data-inset="true" data-split-theme="f" data-split-icon="grid">
+						</ul>
+					</div>
+					
+					<!-- Delay dropdown CLONED -->
+					<div class="delay" style="display: none;" >
+						<div id="div-delay-b" data-role="fieldcontain" data-native-menu="true" class="ui-br">
+							<select name="select-delay" id="select-delay-b" style="display:inline-block" data-corners="false" data-native-menu="false" data-inline="true">
+							</select>
+						</div>
+					</div>
 				</div>
 			</div>
 

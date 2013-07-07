@@ -35,13 +35,6 @@ var app = {
 
 $(document).ready(function() { 
 
-	// Possibly patching the initial transition bug on android!?
-	setTimeout(function() {
-		$('#popup-pos').popup("close", {
-			history: false,
-		});
-	}, 1000);
-	
 	/* Change media file button click */	
 	$('#select-file').on('tap', function() {
 		popupMediaFileChange();
@@ -60,8 +53,8 @@ $(document).ready(function() {
 		});
 	
 	/* Position config Delay change event for select */
-	$('#select-delay').on('change', function() {
-		changeDelayValue();
+	$('#select-delay-a, #select-delay-b').on('change', function() {
+		changeDelayValue($(this).val());
 	});	
 	
 	/* Slider Position change event */
@@ -82,7 +75,7 @@ $(document).ready(function() {
 	$('#pos-delete').on('tap', function() {
 		if (confirm("Are you sure you wish to delete this entry?")) {
 			$('#popup-pos').popup('close');
-			removePosition();
+			removePosition($('#popup-pos').data('posobj'));
 		}
 	});
 	
@@ -131,7 +124,6 @@ $(document).ready(function() {
 		loadFromStorage();
 		updateMediaFileText();
 		updateBodyUI();
-		alert('Set.');
 	});			
 
 	/* Show current json data */

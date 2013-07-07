@@ -1,3 +1,64 @@
+@media all  {
+	.ui-block-left, .ui-block-right { 
+		width: 100%; 
+		float: none; 
+	}
+	.controls .ui-btn-inner {
+		padding-top: 20px;
+		padding-bottom: 20px;
+	}
+	#div-delay-a { display: none; }
+	#div-delay-b { display: inline-block; }
+}
+
+@media all and (min-width: 40em) {
+	#main-content.ui-content  {
+		padding: 0 5px;
+	}
+	.ui-block-left { 
+		width: 49.8%; 
+		float: left;
+		margin-right: 0.4%;
+	}
+	.ui-block-right  {
+		width: 49.8%; 
+		float: right;
+	}
+	#div-delay-a { display: inline-block; }
+	#div-delay-b { display: none; }
+}
+
+@media all and (min-width: 48em) {
+	#main-content.ui-content  {
+		padding: 15px;
+	}
+	.ui-block-left { 
+		width: 47.5%;
+		float: left;
+		margin-right: 5%;
+	}
+	.ui-block-right  {
+		width: 47.5%; 
+		float: right;
+	}
+	#details, #div-slider, #div-mediacontrol, .delay {
+		margin-top: 25px;
+	}
+	.controls .ui-btn-inner {
+		padding-top: 35px;
+		padding-bottom: 35px;
+	}
+	.ui-btn-inner {
+		padding-top: 20px;
+		padding-bottom: 20px;
+	}
+}
+
+
+.ui-listview-inset {
+	margin-top: 0.5em !important;
+}
+
 #song-position {
 	margin-bottom: 0px;
 	margin-top: 10px;
@@ -87,11 +148,6 @@ pre { font-size: 0.7em }
 	padding: 1em 15px;
 }
 
-.controls .ui-btn-inner {
-	padding-top: 20px;
-	padding-bottom: 20px;
-}
-
 .filesystem {
 	color: black; 
 	font-size: 0.8em;
@@ -128,5 +184,10 @@ pre { font-size: 0.7em }
 	background-color: lightblue;
 }
 
+.ui-slider-track .ui-btn.ui-slider-handle {
+	width: 38px;
+}
 
-	
+.ui-slider-track {
+	height: 20px;
+}

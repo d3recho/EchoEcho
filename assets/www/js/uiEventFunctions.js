@@ -12,18 +12,30 @@ function savePositionObj() {
 	var selPositionIndex = $('#popup-pos').data('posobj');
 	if (selPositionIndex == -1) {
 	/* Create new */
-		gMediaObj[gSelFileIndex].positions.push({
-			'position': timeGetSeconds(), 
-			'name': $('#pos-name').val()
-		});
+		// Do some animations
+		var $height = $('#pos-add-new').height();
+		$('#pos-add-new').animate({paddingTop: 30}, 
+			{
+				duration: 'fast',
+				complete: function() {
+					// Take care of business
+					gMediaObj[gSelFileIndex].positions.push({
+						'position': timeGetSeconds(), 
+						'name': $('#pos-name').val()
+					});
+					saveToStorage();
+					updateBodyUI();
+				}
+			}
+		);
 	}
 	/* Update current */
 	else {
 		gMediaObj[gSelFileIndex].positions[selPositionIndex].position = timeGetSeconds();
 		gMediaObj[gSelFileIndex].positions[selPositionIndex].name = $('#pos-name').val();
+		saveToStorage();
+		updateBodyUI();
 	}
-	saveToStorage();
-	updateBodyUI();
 }
 
 // Button to get current audio position, with 10th of seconds
@@ -45,7 +57,7 @@ function mediaFileChanged(index) {
 	if (index != -1) {
 		// Changed to another audio file
 		$('#popup-mediaselect').popup('close');
-		gSelFileIndex = index;
+		gSelFileIndex = (gMediaObj.length > 0) ? index : -1;
 		localStorage.setItem("LastMedia", gSelFileIndex);
 		mediaControl('stop', null);
 		if (gMediaFile) {
@@ -71,19 +83,49 @@ function mediaFileChanged(index) {
 	}
 }
 
-function removePosition() {
-	var selPositionIndex = $('#popup-pos').data('posobj');
-	gMediaObj[gSelFileIndex].positions.splice(selPositionIndex, 1);
-	saveToStorage();
-	updateBodyUI();		
+function removePosition(index) {
+	// Do some animations
+	var $element = $('.btn-pos-popup').eq(index).parent();
+	$element.animate({height: 0}, 
+		{
+			duration: 'fast', 
+			complete: function() {
+				// Take care of business
+				$element.hide();
+				gMediaObj[gSelFileIndex].positions.splice(index, 1);
+				saveToStorage();
+				updateBodyUI();				
+			}
+		}
+	);
 }
 
 function removeMediaEntry(index) {
-	gMediaObj.splice(index, 1);
-	saveToStorage();
-	gSelFileIndex = 0;
-	updateMediaFileText();
-	mediaFileChanged(gSelFileIndex);
+	// Do some animations
+	var $element = $('.file-delete').eq(index).parent();	
+	var $animHeight = '+=' + $element.height() / 2;
+	$element.animate({height: '0px'}, { duration: 'fast'});
+	$('#popup-mediaselect-popup').animate({ top: $animHeight }, 
+		{ 
+			duration: 'fast', 
+			queue: false, 
+			complete: function() {
+				// Take care of business
+				$element.hide();
+				gMediaObj.splice(index, 1);
+				saveToStorage();
+				if (gSelFileIndex == index) {
+					gSelFileIndex = 0;
+					mediaFileChanged(gSelFileIndex);
+				} 
+				// Maintaining right reference to current open media file
+				else if (gSelFileIndex >= index) {
+					gSelFileIndex--;
+					localStorage.setItem("LastMedia", gSelFileIndex);
+				}
+			}
+		}
+	);
 }
 
 
@@ -189,9 +231,10 @@ function mediaControl(action, pos) {
 	}
 }
 
-function changeDelayValue() {
-	gMediaObj[gSelFileIndex].delay = $('#select-delay option:selected').val();
+function changeDelayValue(value) {
+	gMediaObj[gSelFileIndex].delay = value;
 	saveToStorage();
+	generateDelayDropdown();
 }
 
 /*  Media onSuccess Callback callback */

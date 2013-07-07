@@ -54,6 +54,8 @@ function updateTopUI() {
 function updateMediaFileText() {
 	if (gSelFileIndex != -1) {
 		$('#select-file .ui-btn-text').text(gMediaObj[gSelFileIndex].title);
+	} else {
+		$('#select-file .ui-btn-text').text('Select a file...');
 	}
 	initializePositionSlider();
 }
@@ -61,9 +63,10 @@ function updateMediaFileText() {
 function updateBodyUI() {
 	debug('updateBodyUI()');
 	$('.generated').remove();
+	$('.delay').hide();
 	$('#div-list').hide();
-	$('#div-delay').hide();
 	if (gMediaObj.length > 0 && gSelFileIndex != -1) {	
+		$('.delay').show();
 		generateDelayDropdown();
 		/* Generate positions list for selected file */
 		$.each(gMediaObj[gSelFileIndex].positions, function(i, e) {
@@ -72,7 +75,7 @@ function updateBodyUI() {
 				+ $tmpName + '<span class="ui-li-count">' + timeDispStr(e.position) + '</span>'
 				+ '</a><a href="#" data-posobj="' + i + '" class="btn-pos-popup" data-rel="popup">Configure</a></li>');
 		});
-		var $posHtmlEnd = '<li class="generated" data-icon="plus">' 
+		var $posHtmlEnd = '<li id="pos-add-new" class="generated" data-icon="plus">' 
 			+ '<a href="#popup-pos" class="btn-pos-popup" data-posobj="-1" ' 
 			+ 'data-rel="popup" data-position-to="window" style="text-align: center">Add new ...</a></li>';
 		$('#list-pos').append($posHtmlEnd);
@@ -93,13 +96,15 @@ function initializePositionSlider() {
 }
 
 function generateDelayDropdown() {
-	$('#div-delay').show();
 	/* Generate delay dropdown content */
+	$('.generated-delay').remove();
 	$.each(gDelayObj, function(i, e) {
 		var $optSelected = (gDelayObj[i] == gMediaObj[gSelFileIndex].delay) ? " SELECTED" : "";
-		$('#select-delay').append('<option class="generated" value="' + e + '"' + $optSelected + '>' + e + ' seconds</option>')
+		$('#select-delay-a').append('<option class="generated-delay" value="' + e + '"' + $optSelected + '>Delay: ' + e + ' seconds</option>')
+		$('#select-delay-b').append('<option class="generated-delay" value="' + e + '"' + $optSelected + '>Delay: ' + e + ' seconds</option>')
 	});
-	$('#select-delay').selectmenu('refresh');
+	$('#select-delay-a').selectmenu('refresh');
+	$('#select-delay-b').selectmenu('refresh');
 }
 
 /* Set Object to local storage */
@@ -194,18 +199,18 @@ function listDirectory(dir) {
 	// show loading animation
 	dirReader.readEntries(function(entries) {
 		for (var i = 0; i < entries.length; i++) {
-			if (entries[i].isDirectory && entries[i].name[0] != ".") dirs.push(entries[i]);
-			else if (entries[i].isFile && entries[i].name[0] != ".") files.push(entries[i]);
+			if (entries[i].isDirectory && entries[i].name[0] != ".") dirs.push(entries[i].name);
+			else if (entries[i].isFile && entries[i].name[0] != ".") files.push(entries[i].name);
 		}
 		dirs.sort();
 		files.sort();
 		var dirsHtml = "";
 		var filesHtml = "";
 		for (var i = 0; i < dirs.length; i++) {
-			dirsHtml += '<div class="filesystem folders">' + dirs[i].name + '</div>\n';
+			dirsHtml += '<div class="filesystem folders">' + dirs[i] + '</div>\n';
 		}
 		for (var i = 0; i < files.length; i++) {
-			filesHtml += '<div class="filesystem files">' + files[i].name + '</div>\n';
+			filesHtml += '<div class="filesystem files">' + files[i] + '</div>\n';
 		}
 		var parentHtml = (root.fullPath != currentDir.fullPath) ? '<div class="filesystem folders parent">-1</div>\n' : '';
 		$('#filesystem #fs').html(parentHtml + dirsHtml + filesHtml);
