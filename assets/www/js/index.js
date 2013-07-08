@@ -33,10 +33,6 @@ var app = {
     }
 };
 
-$(document).bind("mobileinit", function(){
-  $.mobile.buttonMarkup.hoverDelay = 5;
-});
-
 $(document).ready(function() { 
 
 	/* About popup*/
