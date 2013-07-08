@@ -58,7 +58,13 @@ function mediaFileChanged(index) {
 		// Changed to another audio file
 		$('#popup-mediaselect').popup('close');
 		gSelFileIndex = (gMediaObj.length > 0) ? index : -1;
-		localStorage.setItem("LastMedia", gSelFileIndex);
+		// Show helping page for first file added
+		if (localStorage.getItem("ee_prefs_lastfile") == undefined) {
+			setTimeout(function() {
+				$('#assist-1').popup("open", { history: false, transition: 'fade' });
+			}, 1000);
+		}
+		localStorage.setItem("ee_prefs_lastfile", gSelFileIndex);
 		mediaControl('stop', null);
 		if (gMediaFile) {
 			gMediaFile.release();
@@ -121,7 +127,7 @@ function removeMediaEntry(index) {
 				// Maintaining right reference to current open media file
 				else if (gSelFileIndex >= index) {
 					gSelFileIndex--;
-					localStorage.setItem("LastMedia", gSelFileIndex);
+					localStorage.setItem("ee_prefs_lastfile", gSelFileIndex);
 				}
 			}
 		}
@@ -154,6 +160,7 @@ function loadPositionObj(that) {
 }
 
 function userSeekAtPosition() {
+	console.log(gSliderPos + " " + $('#pos-slider').val());
 	if (gSliderPos != $('#pos-slider').val()) {
 		gSliderPos = $('#pos-slider').val();
 		$('#song-position').text(timeDispStr(gSliderPos));

@@ -33,9 +33,22 @@ var app = {
     }
 };
 
+$(document).bind("mobileinit", function(){
+  $.mobile.buttonMarkup.hoverDelay = 5;
+});
+
 $(document).ready(function() { 
 
-	/* Change media file button click */	
+	/* About popup*/
+	$('.ui-icon-about').on('tap', function() {
+		$('#about').popup("open", {
+				overlayTheme: 'a',
+				transition: 'fade'
+		});
+		return false;
+	});
+
+	/* Change media file button tap */	
 	$('#select-file').on('tap', function() {
 		popupMediaFileChange();
 	});
@@ -60,6 +73,7 @@ $(document).ready(function() {
 	/* Slider Position change event */
 	$('#pos-slider')
 		.on('slidestart', function() {
+			console.log('WHAAT');
 			isUserTouchingSlider = true;
 			userSeekAtPosition();
 			$('#pos-slider').on('change', function() {
@@ -67,11 +81,12 @@ $(document).ready(function() {
 			});
 		})
 		.on('slidestop', function() {
+			console.log('WHOOOT');
 			isUserTouchingSlider = false;
 			$('#pos-slider').off('change');
 		});
 
-	/* Remove position click event */
+	/* Remove position tap event */
 	$('#pos-delete').on('tap', function() {
 		if (confirm("Are you sure you wish to delete this entry?")) {
 			$('#popup-pos').popup('close');
@@ -79,12 +94,12 @@ $(document).ready(function() {
 		}
 	});
 	
-	/* Save Position config click event */
+	/* Save Position config tap event */
 	$('#pos-save').on('tap', function() {
 		savePositionObj();
 	});
 	
-	/* Click event to retrieve position data for popup */
+	/* tap event to retrieve position data for popup */
 	$('#list-pos')
 		.on('tap', '.btn-pos-popup', function() {	
 			$('#popup-pos').popup("open", {
@@ -98,30 +113,33 @@ $(document).ready(function() {
 			mediaControl('delayed', $(this).data('pos'));
 		});
 
-	/* Click event for get current slider position */
-	$('#pos-getcurrent').on('click', function() {
+	/* tap event for get current slider position */
+	$('#pos-getcurrent').on('tap', function() {
 		setTimeAudioPosEntry();
 	});
 
-	/* Play button click event */
+	/* Play button tap event */
 	$('#play').on('tap', function() {
 		mediaControl('play', null);
 	});
 
-	/* Pause button click event */
+	/* Pause button tap event */
 	$('#pause').on('tap', function() {
 		mediaControl('pause', null);
 	});
 	
-	/* Stop button click event */
+	/* Stop button tap event */
 	$('#stop').on('tap', function() {
 		mediaControl('stop', null);
 	});
 	
 	/* Load development default json data */
 	$('#load-dev-json-data').on('tap', function() {
-		localStorage.setItem("gMediaObjects", dev_json_data);
-		loadFromStorage();
+//		localStorage.setItem("ee_mediaobjects", dev_json_data);
+		gSelFileIndex = -1;
+		localStorage.removeItem("ee_prefs_lastfile");
+		localStorage.removeItem("ee_mediaobjects");
+//		loadFromStorage();
 		updateMediaFileText();
 		updateBodyUI();
 	});			
@@ -129,7 +147,7 @@ $(document).ready(function() {
 	/* Show current json data */
 	$('#load-data').on('tap', function() {
 		
-		$('#data').hide('fast').html("<pre>" + syntaxHighlight(JSON.parse(localStorage.getItem("gMediaObjects"))) + "</pre>").show('fast');
+		$('#data').hide('fast').html("<pre>" + syntaxHighlight(JSON.parse(localStorage.getItem("ee_mediaobjects"))) + "</pre>").show('fast');
 	});
 	
 	/* Debug related */
@@ -138,7 +156,7 @@ $(document).ready(function() {
 	});
 
 	
-	/* Click on a Folder */
+	/* tap on a Folder */
 	$('#fs').on('tap', '.folders', function() {
 		if ($(this).text() == '-1') {
 			currentDir.getParent(function(dir) {
@@ -155,56 +173,15 @@ $(document).ready(function() {
 		return false;
 	});
 
-	/* Click on a File */
+	/* tap on a File */
 	$('#fs').on('tap', '.files', function() {
 		onSuccessBrowseFile(currentDir.fullPath + "/" + $(this).text());
 		$('#filesystem').dialog('close');
 		return false;
 	});
 	
-/* For faster clicks */
-$.event.special.tap = {
-  // Abort tap if touch lasts longer than half a second
-  timeThreshold: 5000,
-  setup: function() {
-    var self = this,
-      $self = $(self);
-
-    // Bind touch start
-    $self.on('touchstart', function(startEvent) {
-		// Save the target element of the start event
-      var target = startEvent.target,
-        timeout;
-
-      function removeTapHandler() {
-        clearTimeout(timeout);
-        $self.off('touchend', tapHandler);
-      };
-
-      function tapHandler(endEvent) {
-        removeTapHandler();
-
-        // When the touch end event fires, check if the target of the
-        // touch end is the same as the target of the start, and if
-        // so, fire a click.
-        if (target == endEvent.target) {
-          $.event.simulate('tap', self, endEvent);
-        }
-      };
-
-      // Remove the tap handler if the timeout expires
-      timeout = setTimeout(removeTapHandler, $.event.special.tap.timeThreshold);
-
-      // When a touch starts, bind a touch end handler
-      $self.on('touchend', tapHandler);
-    });
-  }
-};
-	
-	
 	setTimeout(function() {
 		loadFromStorage();
-		//updateTopUI();
 		updateBodyUI();
 	}, 100);
 	

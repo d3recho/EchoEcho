@@ -15,11 +15,14 @@ function debug(str) {
 /* Get Object from local storage */
 function loadFromStorage() {
 	debug('loadFromStorage()');
-	var _lastMedia = localStorage.getItem("LastMedia");
-	gMediaObj = localStorage.getItem("gMediaObjects");
+	var _lastMedia = localStorage.getItem("ee_prefs_lastfile");
+	gMediaObj = localStorage.getItem("ee_mediaobjects");
 	gMediaObj = JSON.parse(gMediaObj);
 	if (gMediaObj == undefined) {
 		gMediaObj = [];
+		setTimeout(function() {
+			$('#about').popup("open", { history: false, transition: 'fade' });		// Show about page
+		}, 1000);
 	}
 	else if (_lastMedia != undefined) {
 		gSelFileIndex = _lastMedia;
@@ -47,7 +50,7 @@ function updateTopUI() {
 			+ '<a href="#" class="file-delete" data-index="' + i + '" >Delete</a></li>');
 	});
 	$('#popup-mediaselect ul').append('<li data-icon="false"><a class="mediafile" href="" data-index="-1">Add new media file ...</a></li>');
-	$('#popup-mediaselect').parent().css('width', '90%');
+
 	$('#popup-mediaselect ul').listview('refresh');
 }
 
@@ -109,7 +112,7 @@ function generateDelayDropdown() {
 
 /* Set Object to local storage */
 function saveToStorage() {
-	localStorage.setItem("gMediaObjects", JSON.stringify(gMediaObj));
+	localStorage.setItem("ee_mediaobjects", JSON.stringify(gMediaObj));
 }	
 
 /* Returns a string of time from time stored in obj */

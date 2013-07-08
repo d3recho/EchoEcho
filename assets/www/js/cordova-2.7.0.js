@@ -1145,9 +1145,25 @@ module.exports = {
 
         // Let native code know we are all done on the JS side.
         // Native code will then un-hide the WebView.
+		
+/*		
+
+
+		DISABLED 8/7/2013 by Vello 
+		Reason: this caused flickering when app first opened
+		Not sure about the java implementation and what this might now brake:
+		
+####################################		
         channel.join(function() {
             exec(null, null, "App", "show", []);
         }, [channel.onCordovaReady]);
+#####################################
+		
+		
+		
+*/		
+		
+		
     }
 };
 

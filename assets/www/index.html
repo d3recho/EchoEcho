@@ -16,10 +16,11 @@
     </head>
 	
     <body onload="app.initialize()">
-		<div data-role="page" id="main" data-theme="a">
-		
+		<div data-role="page" id="main" data-theme="a">		
+			<div class="ui-icon-about "></div>
 			<div data-role="header">
 					<h1 class="ui-title">Echo Echo</h1>
+					
 					<a href="#config" class="ui-btn-right" data-role="button" data-inline="true" data-icon="gear" data-corners="true" data-rel="page" data-transition="flip">Config</a>
 			</div>
 
@@ -122,6 +123,42 @@
 					</div>
 				</div>
 			</div>
+			
+			<!-- About page -->
+			<div data-role="popup" id="about" data-dismissible="true" data-theme="a" data-overlay-theme="a">
+				<div data-role="header">
+					<h2></h2>
+				</div>
+				<div data-role="content">
+					<div id="aboutimg"></div>
+					<div>
+						<h3>EchoEcho version 0.9 (2013)</h3>
+						<p>Simple app that lets you set and use position breakpoints in a song.</p>
+						<p>This could be used in learning and teaching singing, dancing or playing an instrument. </p>
+						<p><i>Start by browsing for a file in the top menu dropdown.</i></p>
+					</div>
+					<a href="#" data-role="button" data-rel="back">Thank you</a>
+					<span class="small">By Vello Pihelgas, tidalsource@gmail.com</small>
+				</div>
+			</div>
+
+			<!-- Assist page 1 -->
+			<div data-role="popup" id="assist-1" data-dismissible="true" data-theme="a" data-overlay-theme="a">
+				<div data-role="header">
+					<h2>&nbsp;</h2>
+				</div>
+				<div data-role="content">
+					<div>
+						<h2>Congrats! </h2>
+						<p>You have added your first media file and can now access the list of breakpoints.</p>
+						<p>The entry 'Play from beginning' is always added by default, you can configure it by the grid icon.</p> 
+						<p><i>You can keep adding multiple breakpoints and make use of the delayed start feature.</i></p>
+					</div>
+					<a href="#" data-role="button" data-rel="back">Enough help</a>
+				</div>
+			</div>
+			
+		
  		</div>
 
 		<!-- Config page -->
@@ -149,6 +186,6 @@
 				</div>
 			</div>
 		</div>
-
+		
 	</body>
 </html>
