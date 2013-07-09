@@ -1,5 +1,5 @@
 @media all  {
-	.ui-block-left, .ui-block-right { 
+	#ui-block-left, #ui-block-right { 
 		width: 100%; 
 		float: none; 
 	}
@@ -7,8 +7,8 @@
 		padding-top: 20px;
 		padding-bottom: 20px;
 	}
-	#div-delay-a { display: none; }
-	#div-delay-b { display: inline-block; }
+	#div-delay-a { display: none; margin: 0; }
+	#div-delay-b { display: inline-block; margin: 0; }
 	#popup-mediaselect-popup { width:90%; }
 }
 
@@ -16,12 +16,12 @@
 	#main-content.ui-content  {
 		padding: 0 5px;
 	}
-	.ui-block-left { 
+	#ui-block-left { 
 		width: 49.8%; 
 		float: left;
 		margin-right: 0.4%;
 	}
-	.ui-block-right  {
+	#ui-block-right  {
 		width: 49.8%; 
 		float: right;
 	}
@@ -34,16 +34,16 @@
 	#main-content.ui-content  {
 		padding: 15px;
 	}
-	.ui-block-left { 
+	#ui-block-left { 
 		width: 47.5%;
 		float: left;
 		margin-right: 5%;
 	}
-	.ui-block-right  {
+	#ui-block-right  {
 		width: 47.5%; 
 		float: right;
 	}
-	#details, #div-slider, #div-mediacontrol, .delay {
+	#details, #div-slider, #div-mediacontrol, #div-delay-a {
 		margin-top: 25px;
 	}
 	.controls .ui-btn-inner {
@@ -58,7 +58,7 @@
 }
 
 .ui-listview-inset {
-	margin-top: 0.5em !important;
+	margin-top: 0 !important;
 }
 
 #song-position {
@@ -168,6 +168,10 @@ pre { font-size: 0.7em }
 	background-position:center; 
 }
 
+#config, #filesystem {
+	z-index: 2;
+}
+
 .files {
 	background-image: url('images/icon-file.png');
 }
@@ -204,16 +208,18 @@ pre { font-size: 0.7em }
 
 #about, #assist-1 {
 	opacity: 0.9;
+	max-width: 25em;
 }
 
-.ui-icon-about
+#ui-icon-about
 {
     background: url('images/logo-72.png');
 	background-repeat:no-repeat;
 	background-position:center; 
 	height: 32px;
 	width: 32px;
-	margin: 10px;
+	margin-right: 10px;
+	margin-bottom: 10px;
 	border-radius: 3px;
     position: fixed;
     bottom: 0;
@@ -224,4 +230,21 @@ pre { font-size: 0.7em }
 .small {
 	opacity: 0.7;
 	font-size: 0.7em;
+}
+
+.overthrow-enabled .overthrow {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+#ui-block-right {
+	margin-top: 0.5em;
+}
+
+#div-delay-a, #div-delay-b {
+	display:inline-block; 
+	margin-left: auto; 
+	margin-right: auto; 
+	width: 100%; 
+	text-align: center;
 }

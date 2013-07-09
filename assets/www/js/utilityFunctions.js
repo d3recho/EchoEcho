@@ -50,7 +50,6 @@ function updateTopUI() {
 			+ '<a href="#" class="file-delete" data-index="' + i + '" >Delete</a></li>');
 	});
 	$('#popup-mediaselect ul').append('<li data-icon="false"><a class="mediafile" href="" data-index="-1">Add new media file ...</a></li>');
-
 	$('#popup-mediaselect ul').listview('refresh');
 }
 
@@ -68,6 +67,9 @@ function updateBodyUI() {
 	$('.generated').remove();
 	$('.delay').hide();
 	$('#div-list').hide();
+	$('#div-list').css('padding-top', '');
+	$('#div-list').height('');
+	$('#div-list').css('background-color', '');
 	if (gMediaObj.length > 0 && gSelFileIndex != -1) {	
 		$('.delay').show();
 		generateDelayDropdown();
@@ -219,4 +221,46 @@ function listDirectory(dir) {
 		$('#filesystem #fs').html(parentHtml + dirsHtml + filesHtml);
 	});
 	
+}
+
+function updateOverthrow(orientation) {
+	if (orientation == 'portrait') {
+		$('#div-delay-a').hide();
+		$('#div-delay-b').show();
+		var heightHeader = $('#ui-header').height();
+		var heightLBlock = $('#ui-block-left').height();
+		var heightDelay = $('#div-delay-b').height();
+		var heightList = $('#div-list').height();
+		$('#div-list').height(0);
+		var heightMain = $('body').height();
+		var num = heightMain - heightLBlock - heightHeader - heightDelay - 55;
+		if (heightList < num) {		
+			$('#div-list').height(heightList);
+		}
+		else {
+			$('.overthrow-enabled #div-list').css('padding-top', 5 + 'px');
+			$('.overthrow-enabled #div-list').css('height', num - 20 + 'px');
+			$('.overthrow-enabled #div-list').css('background', '#222');
+			$('.overthrow-enabled #div-list').css('border-radius', '2px');
+		}	
+	} 
+	else if (orientation == 'landscape') {
+	console.log($('#div-list').height());
+		$('#div-delay-b').hide();
+		$('#div-delay-a').show();
+		var heightHeader = $('#ui-header').height();
+		var heightList = $('#div-list').height();
+		$('#div-list').height(0);
+		var heightMain = $('body').height();
+		var num = heightMain - heightHeader - 5;
+		if (heightList < num) {		
+			$('#div-list').height(heightList);
+		}
+		else {
+			$('.overthrow-enabled #div-list').css('padding-top', 5 + 'px');
+			$('.overthrow-enabled #div-list').css('height', num - 20 + 'px');
+			$('.overthrow-enabled #div-list').css('background', '#222');
+			$('.overthrow-enabled #div-list').css('border-radius', '2px');
+		}			
+	}
 }

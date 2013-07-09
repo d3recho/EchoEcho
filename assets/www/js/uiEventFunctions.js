@@ -25,6 +25,7 @@ function savePositionObj() {
 					});
 					saveToStorage();
 					updateBodyUI();
+					handleOrientationChange();
 				}
 			}
 		);
@@ -73,6 +74,7 @@ function mediaFileChanged(index) {
 		initializePositionSlider();
 		updateMediaFileText();
 		updateBodyUI();
+		handleOrientationChange();
 	} 
 	else {
 		// New file selection 
@@ -101,6 +103,7 @@ function removePosition(index) {
 				gMediaObj[gSelFileIndex].positions.splice(index, 1);
 				saveToStorage();
 				updateBodyUI();				
+				handleOrientationChange();
 			}
 		}
 	);
@@ -302,17 +305,9 @@ function onSuccessBrowseFile(src) {
 					'name': 'Play from beginning'
 				}]
 			});
-//			gSelFileIndex = gMediaObj.length - 1;
 			saveToStorage();
 			mMedia.release();
 			mMedia = null;
-/*			if (gMediaFile) {
-				gMediaFile.release();
-				gMediaFile = null;
-			}
-			loadMediaFile();
-			updateMediaFileText();
-			updateBodyUI();	*/
 			mediaFileChanged(gMediaObj.length - 1);
 			history.back();
 			return false;
@@ -323,3 +318,20 @@ function onSuccessBrowseFile(src) {
 function onErrorBrowseFile(msg) {
 	updateMediaFileText();
 }
+
+/* Event handler for orientation change */
+function preHandleOrientationChange() {
+	updateBodyUI();
+	handleOrientationChange()
+}
+
+/* Orientation handling restructuring */
+function handleOrientationChange() {
+	if (window.matchMedia('(orientation: portrait)').matches) {
+		updateOverthrow('portrait');
+	}
+	else {
+		updateOverthrow('landscape');
+	}
+}
+
