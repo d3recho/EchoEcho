@@ -212,15 +212,34 @@ function listDirectory(dir) {
 		var dirsHtml = "";
 		var filesHtml = "";
 		for (var i = 0; i < dirs.length; i++) {
-			dirsHtml += '<div class="filesystem folders">' + dirs[i] + '</div>\n';
+			dirsHtml += '<div class="filesystem folders" data-source="fs">' + dirs[i] + '</div>\n';
 		}
 		for (var i = 0; i < files.length; i++) {
-			filesHtml += '<div class="filesystem files">' + files[i] + '</div>\n';
+			filesHtml += '<div class="filesystem files" data-source="fs">' + files[i] + '</div>\n';
 		}
-		var parentHtml = (root.fullPath != currentDir.fullPath) ? '<div class="filesystem folders parent">-1</div>\n' : '';
+		var parentHtml = (root.fullPath != currentDir.fullPath) ? '<div class="filesystem folders parent" data-source="fs">-1</div>\n' : '';
 		$('#filesystem #fs').html(parentHtml + dirsHtml + filesHtml);
 	});
 	
+}
+
+/* List files using Media Query */
+function listMediaQuery(json, type) {
+	var items = [];
+	var html = '';
+	for (var i = 0; i < json.length; i++) {
+		if (type == 'folders') {
+			var name = (json[i].name != "") ? json[i].name : '(Unknown)';
+			html += '<div class="filesystem folders" data-source="mq" data-index="' + json[i].id + '">' + name + '</div>\n';
+		}
+		else if (type == 'files') {
+			var title = (json[i].title != "") ? json[i].title : '(Unknown)';
+			var duration = Math.ceil(json[i].duration / 1000);
+			html += '<div class="filesystem files" data-source="mq" data-path="' + json[i].path + '" data-title="' + title + '" data-duration="' + duration + '">' + title + ' [' + timeDispStr(duration) + ']</div>\n';		
+		}
+	}
+	var parentHtml = (type == 'files') ? '<div class="filesystem folders parent" data-source="mq" data-index="-1"></div>\n' : '';
+	$('#filesystem #fs').html(parentHtml + html);
 }
 
 function updateOverthrow(orientation) {
@@ -231,11 +250,8 @@ function updateOverthrow(orientation) {
 		var heightLBlock = $('#ui-block-left').height();
 		var heightDelay = $('#div-delay-b').height();
 		var heightList = $('#div-list').height();
-		$('#div-list').height(0);
-		var heightMain = $('body').height();
-		var num = heightMain - heightLBlock - heightHeader - heightDelay - 55;
+		var num = gHeightMain - heightLBlock - heightHeader - heightDelay - 55;
 		if (heightList < num) {		
-			$('#div-list').height(heightList);
 		}
 		else {
 			$('.overthrow-enabled #div-list').css('padding-top', 5 + 'px');
@@ -245,16 +261,12 @@ function updateOverthrow(orientation) {
 		}	
 	} 
 	else if (orientation == 'landscape') {
-	console.log($('#div-list').height());
 		$('#div-delay-b').hide();
 		$('#div-delay-a').show();
 		var heightHeader = $('#ui-header').height();
 		var heightList = $('#div-list').height();
-		$('#div-list').height(0);
-		var heightMain = $('body').height();
-		var num = heightMain - heightHeader - 5;
+		var num = gHeightMain - heightHeader - 5;
 		if (heightList < num) {		
-			$('#div-list').height(heightList);
 		}
 		else {
 			$('.overthrow-enabled #div-list').css('padding-top', 5 + 'px');
@@ -264,3 +276,8 @@ function updateOverthrow(orientation) {
 		}			
 	}
 }
+
+function prefetchBodyHeight() {
+	gHeightMain = $('body').height() - 2;
+}
+

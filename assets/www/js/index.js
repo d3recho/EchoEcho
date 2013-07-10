@@ -9,6 +9,7 @@ var gMediaStatus;
 var gMediaFile = null;
 var mMedia; 
 var gInitSeekTo = 0;	// when audio positioned start is used before file is loaded, triggered by callback
+var gHeightMain = 0;
 var isUserTouchingSlider = false;
 var root = null; 		// File System root variable
 var currentDir = null; // Current DirectoryEntry listed
@@ -121,7 +122,7 @@ $(document).ready(function() {
 
 	/* Pause button tap event */
 	$('#pause').on('tap', function() {
-		mediaControl('pause', null);
+		mediaControl('pause', null);		
 	});
 	
 	/* Stop button tap event */
@@ -154,30 +155,53 @@ $(document).ready(function() {
 	
 	/* tap on a Folder */
 	$('#fs').on('tap', '.folders', function() {
-		if ($(this).text() == '-1') {
-			currentDir.getParent(function(dir) {
-				listDirectory(dir);
-			}, function() {
-				alert('Already in root folder');
-			});		
+		// Perform File System tasks
+		if ($(this).data('source') == 'fs') {
+			if ($(this).text() == '-1') {
+				currentDir.getParent(function(dir) {
+					listDirectory(dir);
+				}, function() {
+					alert('Already in root folder');
+				});		
+			}
+			else {
+				currentDir.getDirectory($(this).text(), {create: false}, function(dir) {
+					listDirectory(dir);
+				});
+			}
+			return false;
 		}
-		else {
-			currentDir.getDirectory($(this).text(), {create: false}, function(dir) {
-				listDirectory(dir);
-			});
+		// Perform MediaQuery tasks
+		else if ($(this).data('source') == 'mq') {	
+			if ($(this).data('index') == '-1') {
+				cordova.exec(successMQListArtists, errorMQ, 'MediaQuery', 'listArtists', []);
+			}
+			else {
+				cordova.exec(successMQListSongsFromArtists, errorMQ, 'MediaQuery', 'listSongsFromArtist', [$(this).data('index')]);
+			}
+			return false;
 		}
-		return false;
 	});
 
 	/* tap on a File */
 	$('#fs').on('tap', '.files', function() {
-		onSuccessBrowseFile(currentDir.fullPath + "/" + $(this).text());
-		$('#filesystem').dialog('close');
-		return false;
+		// Perform File System tasks
+		if ($(this).data('source') == 'fs') {
+			onSuccessBrowseFile(currentDir.fullPath + "/" + $(this).text());
+			$('#filesystem').dialog('close');
+			return false;
+		}
+		// Perform MediaQuery tasks
+		else if ($(this).data('source') == 'mq') {	
+			onSuccessMQFile($(this).data('path'), $(this).data('title'), $(this).data('duration'));
+			$('#filesystem').dialog('close');
+			return false;			
+		}
 	});
 	
 	setTimeout(function() {
 		loadFromStorage();
+		prefetchBodyHeight();
 		updateBodyUI();
 		$('body').show();
 		//updateOverthrow();		

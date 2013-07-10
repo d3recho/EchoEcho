@@ -36,6 +36,7 @@ function savePositionObj() {
 		gMediaObj[gSelFileIndex].positions[selPositionIndex].name = $('#pos-name').val();
 		saveToStorage();
 		updateBodyUI();
+		handleOrientationChange();
 	}
 }
 
@@ -78,7 +79,8 @@ function mediaFileChanged(index) {
 	} 
 	else {
 		// New file selection 
-		getFileSystem();
+		//getFileSystem();
+		cordova.exec(successMQListArtists, errorMQ, 'MediaQuery', 'listArtists', []);
 		$.mobile.changePage('#filesystem', {transition: "flip"});
 		
 /*	Old stuff
@@ -315,12 +317,31 @@ function onSuccessBrowseFile(src) {
 	}, 10);
 }
 
+function onSuccessMQFile(path, title, duration) {
+			gMediaObj.push({
+				'title': title,
+				'path': path,
+				'delay': 0,
+				'duration': duration,
+				'positions': [{
+					'position': 0,
+					'name': 'Play from beginning'
+				}]
+			});
+			saveToStorage();	
+			mediaFileChanged(gMediaObj.length - 1);
+			history.back();
+			updateBodyUI();
+			return false;
+}
+
 function onErrorBrowseFile(msg) {
 	updateMediaFileText();
 }
 
 /* Event handler for orientation change */
 function preHandleOrientationChange() {
+	prefetchBodyHeight();
 	updateBodyUI();
 	handleOrientationChange()
 }
@@ -335,3 +356,15 @@ function handleOrientationChange() {
 	}
 }
 
+/* Media Query */
+function successMQListArtists(result) {
+	listMediaQuery(result, 'folders');
+}
+
+function successMQListSongsFromArtists(result) {
+	listMediaQuery(result, 'files');
+}
+
+function errorMQ(msg) {
+	alert('error: ' + message);
+}
