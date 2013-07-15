@@ -17,9 +17,11 @@
        under the License.
  */
 
-package tidalsource.net;
+package net.tidalsource;
 
 import android.os.Bundle;
+import android.view.WindowManager;
+
 import org.apache.cordova.*;
 
 public class EchoEcho extends DroidGap
@@ -31,6 +33,7 @@ public class EchoEcho extends DroidGap
         // Set by <content src="index.html" /> in config.xml
         super.loadUrl(Config.getStartUrl());
         //super.loadUrl("file:///android_asset/www/index.html")
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 } 
 

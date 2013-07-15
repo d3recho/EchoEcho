@@ -194,7 +194,7 @@ $(document).ready(function() {
 		// Perform MediaQuery tasks
 		else if ($(this).data('source') == 'mq') {	
 			onSuccessMQFile($(this).data('path'), $(this).data('title'), $(this).data('duration'));
-			$('#filesystem').dialog('close');
+			//$('#filesystem').dialog('close');
 			return false;			
 		}
 	});
@@ -204,7 +204,6 @@ $(document).ready(function() {
 		prefetchBodyHeight();
 		updateBodyUI();
 		$('body').show();
-		//updateOverthrow();		
 		window.matchMedia("(orientation: portrait)").addListener(preHandleOrientationChange);
 		handleOrientationChange();
 	}, 50);

@@ -1,4 +1,4 @@
-package tidalsource.net;
+package net.tidalsource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -31,7 +31,6 @@ public class MediaQuery extends CordovaPlugin {
 
 	@Override
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) {		
-		Log.d("Action", action);
 		if (action.equals("listArtists")) {
 			JSONArray json = this.listArtists();
 			callbackContext.success(json);
@@ -122,7 +121,6 @@ public class MediaQuery extends CordovaPlugin {
 			// TODO: See if we can not just sort list ARTISTS, instead of sorting each tune.
 			if(!albums.contains(cursor.getString(2))){				
 				albums.add(cursor.getString(2));
-				Log.d("AlbumName", cursor.getString(1));
 				String artwork = getAlbumArtwork(cursor.getLong(2));
 				
 				try {					
@@ -141,7 +139,6 @@ public class MediaQuery extends CordovaPlugin {
 		Activity ctx = this.cordova.getActivity();
 		ContentResolver res = ctx.getContentResolver();
 		InputStream in = null;
-		Log.d("Album URI", String.valueOf(uri));
 		try {
 			in = res.openInputStream(uri);
 		} catch (FileNotFoundException e1) {
@@ -149,7 +146,6 @@ public class MediaQuery extends CordovaPlugin {
 			e1.printStackTrace();
 			return "";
 		}
-		Log.d("Album Id", String.valueOf(album_id));
 		Bitmap artwork = BitmapFactory.decodeStream(in);
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		artwork.compress(Bitmap.CompressFormat.JPEG, 100, stream);
@@ -190,7 +186,6 @@ public class MediaQuery extends CordovaPlugin {
 		JSONArray songs = new JSONArray();		
 		while(cursor.moveToNext()) {
 				try {
-					Log.d("songlength", cursor.getString(6));
 					songs.put(new JSONObject()
 							.put("id", cursor.getString(0))
 							.put("artist", cursor.getString(2))

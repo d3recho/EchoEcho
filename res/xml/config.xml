@@ -55,7 +55,8 @@
     <plugin name="Echo" value="org.apache.cordova.Echo" />
     <plugin name="Globalization" value="org.apache.cordova.Globalization"/>
     <plugin name="InAppBrowser" value="org.apache.cordova.InAppBrowser"/>
-	<plugin name="MediaQuery" value="tidalsource.net.MediaQuery"/>
+	<plugin name="MediaQuery" value="net.tidalsource.MediaQuery"/>
+<!--	<plugin name="ScreenOn" value="net.tidalsource.ScreenOn"/>   -->
 </plugins>
 </cordova>
 

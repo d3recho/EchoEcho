@@ -192,6 +192,7 @@ function mediaControl(action, pos) {
 				updateUISlider(0);
 			}
 			gMediaFile.play();
+//			cordova.exec(function() {}, function() {}, 'ScreenOn', 'on', []);
 			gPlaybackTimer = setInterval(function() {
 				gMediaFile.getCurrentPosition(function(position) {
 					updateUISlider(Math.round(position));
@@ -202,12 +203,14 @@ function mediaControl(action, pos) {
 			if (gMediaStatus == Media.MEDIA_PAUSED) mediaControl('play', null);
 			else if (gMediaStatus == Media.MEDIA_RUNNING) {
 				volumeFade(1, 0, 100);
+//				cordova.exec(function() {}, function() {}, 'ScreenOn', 'off', []);
 				setTimeout(function() { 	gMediaFile.pause();	}, 100);
 			}
 			break;
 		case 'stop':
 			if (gMediaFile != undefined && gMediaStatus != undefined && gMediaStatus != Media.MEDIA_STOPPED) {
 				volumeFade(1, 0, 100);
+//				cordova.exec(function() {}, function() {}, 'ScreenOn', 'off', []);
 				setTimeout(function() { 	if (gMediaFile != undefined) gMediaFile.stop();	}, 100);
 				updateUISlider(0);
 			}
