@@ -1,5 +1,7 @@
 var gDelayObj = [0, 2, 3, 5, 10, 20];
+var gIsAppPaused = false;	// Do something with this 
 var gSelFileIndex = -1;
+var gPositionIndex = null;
 var gMediaObj;
 var gPlaybackTimer;
 var gDelayTimer;
@@ -7,6 +9,8 @@ var gDebugTimer;
 var gSliderPos = 0;
 var gMediaStatus;
 var gMediaFile = null;
+var gRepeatOn = false;
+var gPlayTo;		// Play To, set when delayed play is active and should be reset to null otherwise
 var mMedia; 
 var gInitSeekTo = 0;	// when audio positioned start is used before file is loaded, triggered by callback
 var gHeightMain = 0;
@@ -35,6 +39,12 @@ var app = {
 };
 
 $(document).ready(function() { 
+	/* Shim to allow placeholder for type number input fields*/
+	$("input[type='number']").each(function(i, el) {
+		el.type = "text";
+		el.onfocus = function(){this.type="number";};
+		el.onblur = function(){this.type="text";};
+	});
 	
 	/* About popup*/
 	$('#ui-icon-about').on('tap', function() {
@@ -64,21 +74,26 @@ $(document).ready(function() {
 	
 	/* Position config Delay change event for select */
 	$('#select-delay-a, #select-delay-b').on('change', function() {
-		changeDelayValue($(this).val());
+		changeDelayValue(Number($(this).val()));
+	});	
+
+	/* Repeat flip */
+	$('#select-flip-a, #select-flip-b').on('change', function() {
+		$('#select-flip-a, #select-flip-b').val($(this).val()).slider('refresh');
+		gRepeatOn = ($(this).val() == "on") ? true : false;
 	});	
 	
 	/* Slider Position change event */
 	$('#pos-slider')
 		.on('slidestart', function() {
-			console.log('WHAAT');
 			isUserTouchingSlider = true;
+			gPlayTo = null;
 			userSeekAtPosition();
 			$('#pos-slider').on('change', function() {
 				userSeekAtPosition();
 			});
 		})
 		.on('slidestop', function() {
-			console.log('WHOOOT');
 			isUserTouchingSlider = false;
 			$('#pos-slider').off('change');
 		});
@@ -96,23 +111,26 @@ $(document).ready(function() {
 		savePositionObj();
 	});
 	
-	/* tap event to retrieve position data for popup */
+	/* Position button tap event */
 	$('#list-pos')
 		.on('tap', '.btn-pos-popup', function() {	
+			loadPositionObj($(this));
 			$('#popup-pos').popup("open", {
 				overlayTheme: 'a',
 				transition: 'flow'
 			});
-			loadPositionObj($(this));
 			return false;
 		})
 		.on('tap', '.btn-play-pos', function() {
-			mediaControl('delayed', $(this).data('pos'));
+			mediaControl('delayed', $(this).data('posobj'));
 		});
 
 	/* tap event for get current slider position */
 	$('#pos-getcurrent').on('tap', function() {
-		setTimeAudioPosEntry();
+		setTimeAudioPosEntry('a');
+	});
+	$('#pos-getcurrent-b').on('tap', function() {
+		setTimeAudioPosEntry('b');
 	});
 
 	/* Play button tap event */
@@ -122,7 +140,7 @@ $(document).ready(function() {
 
 	/* Pause button tap event */
 	$('#pause').on('tap', function() {
-		mediaControl('pause', null);		
+		mediaControl('pause', gPositionIndex);		
 	});
 	
 	/* Stop button tap event */

@@ -1,4 +1,4 @@
-@media all  {
+@media all {
 	#ui-block-left, #ui-block-right { 
 		width: 100%; 
 		float: none; 
@@ -7,9 +7,12 @@
 		padding-top: 20px;
 		padding-bottom: 20px;
 	}
-	#div-delay-a { display: none; margin: 0; }
-	#div-delay-b { display: inline-block; margin: 0; }
+	#div-delay-repeat-a { display: none; margin: 0; padding: 0;}
+	#div-delay-repeat-b { display: inline-block; margin: 0; padding: 0; !IMPORTANT}
 	#popup-mediaselect-popup { width:90%; }
+	#flip-repeat-a { display: none;}
+	#flip-repeat-b { display: inline-block;}
+	.delay-repeat { padding: 0 10px;}	
 }
 
 @media all and (min-width: 40em) {
@@ -25,9 +28,12 @@
 		width: 49.8%; 
 		float: right;
 	}
-	#div-delay-a { display: inline-block; }
-	#div-delay-b { display: none; }
+	#div-delay-repeat-a { display: inline-block; margin: 0; padding: 0; }
+	#div-delay-repeat-b { display: none; margin: 0; padding: 0;}
 	#popup-mediaselect-popup { width:80%; }
+	#flip-repeat-a { display: inline-block;}
+	#flip-repeat-b { display: none;}
+	.delay-repeat { padding: 0;}
 }
 
 @media all and (min-width: 48em) {
@@ -43,7 +49,7 @@
 		width: 47.5%; 
 		float: right;
 	}
-	#details, #div-slider, #div-mediacontrol, #div-delay-a {
+	#details, #div-slider, #div-mediacontrol, #div-delay-repeat-a, #flip-repeat-a, #flip-repeat-b {
 		margin-top: 25px;
 	}
 	.controls .ui-btn-inner {
@@ -55,6 +61,7 @@
 		padding-bottom: 20px;
 	}
 	#popup-mediaselect-popup { width:60%; }
+	.delay-repeat { padding: 0 10px;}
 }
 
 .ui-listview-inset {
@@ -144,6 +151,7 @@ pre { font-size: 0.7em }
 
 .ui-li-has-count .ui-li-count {
 	font-size: 0.7em;
+	top: 40%;
 }
 
 .ui-li .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li {
@@ -241,10 +249,34 @@ pre { font-size: 0.7em }
 	margin-top: 0.5em;
 }
 
-#div-delay-a, #div-delay-b {
-	display:inline-block; 
-	margin-left: auto; 
-	margin-right: auto; 
-	width: 100%; 
-	text-align: center;
+.pos-start-time {
+	color: darkgreen;
+}
+.pos-stop-time {
+	color: darkred;
+}
+
+.delay-repeat .ui-slider-switch { 
+	margin: 0.4em 0;
+}
+
+#popup-pos {
+	max-width: 25em;
+}
+
+
+
+.pos-btn-active {
+	background: 			#222 /*{a-bdown-background-color}*/;
+	text-shadow: 0 /*{a-bdown-shadow-x}*/ 1px /*{a-bdown-shadow-y}*/ 0 /*{a-bdown-shadow-radius}*/ #111 /*{a-bdown-shadow-color}*/;
+	background-image: -webkit-gradient(linear, left top, left bottom, from( #202020 /*{a-bdown-background-start}*/), to( #2c2c2c /*{a-bdown-background-end}*/)); /* Saf4+, Chrome */
+	background-image: -webkit-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* Chrome 10+, Saf5.1+ */
+	background-image:    -moz-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* FF3.6 */
+	background-image:     -ms-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* IE10 */
+	background-image:      -o-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* Opera 11.10+ */
+	background-image:         linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/);
+}
+
+.pos-btn-active .ui-btn-text, .pos-btn-active .btn-play-pos {
+	color: 					#ccc /*{a-bdown-color}*/;
 }

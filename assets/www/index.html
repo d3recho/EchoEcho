@@ -3,12 +3,12 @@
     <head>
         <meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1"> 
-        <link rel="stylesheet" type="text/css" href="css/jquery.mobile.theme-1.3.1.min.css" />
-        <link rel="stylesheet" type="text/css" href="css/jquery.mobile.structure-1.3.1.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/jquery.mobile.theme-1.3.1.css" />
+        <link rel="stylesheet" type="text/css" href="css/jquery.mobile.structure-1.3.1.css" />
 		<link rel="stylesheet" type="text/css" href="css/custom.css" />
 		<script src="js/jquery.js"></script>
 		<script type="text/javascript" src="js/mobinit.js"></script>
-		<script src="js/jquery.mobile-1.3.1.min.js"></script>		
+		<script src="js/jquery.mobile-1.3.1.js"></script>		
         <script type="text/javascript" src="js/cordova-2.7.0.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
 		<script type="text/javascript" src="js/overthrow.js"></script>
@@ -21,7 +21,7 @@
 		<div data-role="page" id="main" data-theme="a">		
 			<div data-role="header" id="ui-header">
 					<h1 class="ui-title">EchoEcho</h1>
-					<!-- <a href="#config" class="ui-btn-right" data-role="button" data-inline="true" data-icon="gear" data-corners="true" data-rel="page" data-transition="flip">Config</a> -->
+					<a href="#config" class="ui-btn-right" data-role="button" data-inline="true" data-icon="gear" data-corners="true" data-rel="page" data-transition="flip">Config</a> 
 			</div>
 
 			<div id="main-content" data-role="content" class="ui-content">
@@ -56,12 +56,18 @@
 						<a href="#" id="pause" class="controls" data-role="button" data-icon="pause">Pause</a>
 						<a href="#" id="stop" class="controls" data-role="button" data-icon="stop">Stop</a>
 					</div>
-					<!-- Delay dropdown CLONED -->
-					<div class="delay">
-					<div id="div-delay-a" data-role="fieldcontain" data-native-menu="true" class="ui-br">
-						<select name="select-delay" id="select-delay-a" style="display:inline-block" data-corners="false" data-native-menu="false" data-inline="true">
-						</select>
-					</div>
+					<!-- Delay dropdown and repeat CLONED -->
+					<div class="delay-repeat">
+						<div id="div-delay-repeat-a" data-role="fieldcontain" data-native-menu="true" class="ui-br" data-inline="true">
+							<select name="select-delay" id="select-delay-a" style="display:inline-block" data-inline="true" data-corners="false" data-native-menu="false" data-inline="true">
+							</select>
+						</div>
+						<div style="float: right" id="flip-repeat-a">
+							<select id="select-flip-a" name="flip-repeat" data-role="slider">
+								<option value="off">Repeat</option>
+								<option value="on">Repeat</option>
+							</select>
+						</div>
 					</div>
 				</div>
 				
@@ -72,12 +78,18 @@
 						</ul>
 					</div>
 					
-					<!-- Delay dropdown CLONED -->
-					<div class="delay">
-					<div id="div-delay-b" data-role="fieldcontain" data-native-menu="true" class="ui-br">
-						<select name="select-delay" id="select-delay-b" style="display:inline-block" data-corners="false" data-native-menu="false" data-inline="true">
-						</select>
-					</div>
+					<!-- Delay dropdown and repeat CLONED -->
+					<div class="delay-repeat">
+						<div id="div-delay-repeat-b" data-role="fieldcontain" data-native-menu="true" class="ui-br" data-inline="true">
+							<select name="select-delay" id="select-delay-b" style="display:inline-block" data-inline="true" data-corners="false" data-native-menu="false" data-inline="true">
+							</select>
+						</div>
+						<div style="float: right" id="flip-repeat-b">
+							<select id="select-flip-b" name="flip-repeat" data-role="slider">
+								<option value="off">Repeat</option>
+								<option value="on">Repeat</option>
+							</select>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -100,26 +112,34 @@
 					<input type="text" name="pos-name" id="pos-name" value="" placeholder="Enter short description" />
 					<div style="width: 100%;">
 					<div style="width: 45%; display: inline-block;">
-						<label for="">Minutes</label>
-						<input id="pos-minute" class="ui-input-text" type="number" value="0" min="0" max="999"></input>
+						<label>From position</label><br>
+						<div style="width: 3em; display: inline-block;">
+							<input id="pos-minute" class="ui-input-text pos-start-time" type="number" value="" min="0" max="999" placeholder="min"></input>
+						</div>
+						<label>:</label>
+						<div style="width: 3em; display: inline-block;">
+							<input id="pos-second" class="ui-input-text pos-start-time" type="number" value="" min="0" max="59" placeholder="sec"></input>
+						</div>
 					</div>
 					<div style="width: 45%; display: inline-block; float: right;">
-						<label for="">Seconds</label>
-						<input id="pos-second" class="ui-input-text" type="number" value="0" min="0" max="59"></input>
-					</div>					
+						<label>To position</label><br>
+						<div style="width: 3em; display: inline-block;">
+							<input id="pos-minute-b" class="ui-input-text pos-stop-time" type="number" value="" min="0" max="999" placeholder="min"></input>
+						</div>
+						<label>:</label>
+						<div style="width: 3em; display: inline-block;">
+							<input id="pos-second-b" class="ui-input-text pos-stop-time" type="number" value="" min="0" max="59" placeholder="sec"></input>
+						</div>
+					</div>				
 					</div>
 					<div data-role="controlgroup" data-type="horizontal">
-						<a id="pos-getcurrent" href="" data-role="button" data-icon="forward">Get position</a>
-						<a id="pos-save" href="#" 
-							data-rel="back" 
-							data-role="button" 
-							data-icon="check" 
-							data-iconpos="right"
-							>Save</a>
+						<a id="pos-getcurrent" href="" data-role="button" data-icon="forward" data-iconpos="left">Set Start</a>
+						<a id="pos-getcurrent-b" href="" data-role="button" data-icon="forward" data-iconpos="right">Set Stop</a>
 					</div>
 					<div data-role="controlgroup" data-type="horizontal">
+						<a id="pos-save" href="#" data-rel="back" data-role="button" data-icon="check" data-iconpos="left">Save</a>
 						<a id="pos-cancel" href="#" data-rel="back" data-role="button">Cancel</a>
-						<a id="pos-delete" href="#" data-iconpos="right" data-role="button" data-icon="delete">Delete</a>
+						<a id="pos-delete" href="#" data-iconpos="right" data-role="button" data-icon="delete">Del</a>
 					</div>
 				</div>
 			</div>
